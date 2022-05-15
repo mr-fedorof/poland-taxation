@@ -1,0 +1,21 @@
+@use 'variables' as vars;
+
+:host {
+  display: block;
+}
+
+.main {
+  height: 100%;
+
+  &__sidenav {
+    width: 200px;
+  }
+}
+
+.sidenav {
+  &__item {
+    &--active {
+      color: vars.$primary-color;
+    }
+  }
+}

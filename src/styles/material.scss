@@ -1,0 +1,5 @@
+@use '@angular/material' as mat;
+@use 'variables' as vars;
+
+@include mat.core(vars.$app-typography);
+@include mat.all-component-themes(vars.$app-theme);
