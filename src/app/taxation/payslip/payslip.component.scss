@@ -1,0 +1,95 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.customization {
+  display: flex;
+  align-items: center;
+
+  .form-control {
+    margin-right: 16px;
+  }
+}
+
+.add-tax-additive-button {
+  margin-left: auto;
+}
+
+.payslip {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+
+  > tr > td {
+    vertical-align: top;
+    padding: 8px;
+    border: 1px solid black;
+  }
+}
+
+.nested-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0;
+
+  > tr {
+    > td {
+      padding: 8px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+
+    &:first-child {
+      > td {
+        padding-top: 0;
+      }
+    }
+
+    &:last-child {
+      > td {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.block-1 {
+  > tr > td {
+    &:first-child {
+      text-align: left;
+      width: 50%;
+    }
+
+    &:last-child {
+      text-align: right;
+      width: 50%;
+    }
+  }
+}
+
+.block-2 {
+  > tr > td {
+    &:first-child {
+      text-align: left;
+      width: 50%;
+    }
+
+    &:last-child {
+      text-align: right;
+      width: 50%;
+    }
+  }
+}
