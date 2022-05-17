@@ -1,4 +1,8 @@
 export enum TaxElementId {
+  Employee = 'Employee',
+  Employer = 'Employer',
+  Base = 'Base',
+
   TotalGross = 'TotalGross',
   TotalGrossValue = 'TotalGrossValue',
 
@@ -45,9 +49,19 @@ export enum TaxElementId {
   PkupReduce = 'PkupReduce',
 
   PpkBasicContribution = 'PpkBasicContribution',
+  PpkBasicContributionBase = 'PpkBasicContributionBase',
+  PpkBasicContributionEmployer = 'PpkBasicContributionEmployer',
+  PpkBasicContributionEmployee = 'PpkBasicContributionEmployee',
+
   PpkAdditionalContribution = 'PpkAdditionalContribution',
+  PpkAdditionalContributionBase = 'PpkAdditionalContributionBase',
+  PpkAdditionalContributionEmployer = 'PpkAdditionalContributionEmployer',
+  PpkAdditionalContributionEmployee = 'PpkAdditionalContributionEmployee',
+
   HealthInsuranceContributionBase = 'HealthInsuranceContributionBase',
+  HealthInsuranceContributionBaseValue = 'HealthInsuranceContributionBaseValue',
   HealthInsuranceContribution = 'HealthInsuranceContribution',
+  HealthInsuranceContributionValue = 'HealthInsuranceContributionValue',
   ZaniechPod = 'ZaniechPod',
   IncomeTax = 'IncomeTax',
   DeductibleExpenses = 'DeductibleExpenses',

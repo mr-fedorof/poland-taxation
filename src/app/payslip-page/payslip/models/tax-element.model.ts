@@ -6,4 +6,5 @@ export interface TaxElement {
   title?: string;
   description?: string;
   formula?: string;
+  hint?: string;
 }

@@ -31,6 +31,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
   public taxElementId!: TaxElementId;
   public name!: string;
   public formula!: string;
+  public hint!: string;
   public formattedFormula!: string;
   public formulaRelatedTaxElementIds!: TaxElementId[];
   public title!: string;
@@ -47,6 +48,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
     this.taxElementId = this.getTaxElementId();
     this.name = this.getName();
     this.title = this.getTitle();
+    this.hint = this.getHint();
     this.description = this.getDescription();
     this.formula = this.getFormula();
     this.formulaRelatedTaxElementIds = this.getFormulaRelatedTaxElementIds(this.formula);
@@ -104,6 +106,10 @@ export class TaxElementComponent implements OnInit, OnDestroy {
 
   private getFormula(): string {
     return this.taxElementParam?.formula ?? '';
+  }
+
+  private getHint(): string {
+    return this.taxElementParam?.hint ?? '';
   }
 
   private getFormulaRelatedTaxElementIds(formula: string): TaxElementId[] {

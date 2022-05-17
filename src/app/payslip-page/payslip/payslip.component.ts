@@ -6,7 +6,6 @@ import { MONTHS } from '../../../modules/date';
 import { TaxAdditiveValue, Taxation, TaxationService } from '../../taxation/taxation.service';
 import { TaxAdditive } from './models/tax-additive.model';
 import { TaxElementId } from './models/tax-element-id.model';
-import { TaxElement } from './models/tax-element.model';
 import { TaxElementRegistryService } from './services/tax-element-registry.service';
 import { TaxElements } from './services/tax-elements';
 import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
@@ -20,8 +19,6 @@ import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
   ]
 })
 export class PayslipComponent implements OnInit {
-  public readonly TaxElementId: typeof TaxElementId = TaxElementId;
-
   public readonly months: string[] = MONTHS;
   public readonly currentDate: Date = new Date();
 
