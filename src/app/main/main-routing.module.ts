@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'taxation', loadChildren: () => import('../taxation/taxation.module').then(m => m.TaxationModule) },
-  { path: 'welcome', loadChildren: () => import('../welcome/welcome.module').then(m => m.WelcomeModule) },
-  { path: '',   redirectTo: '/welcome', pathMatch: 'full' },
-  { path: '**',   redirectTo: '/welcome' }
+  { path: 'payslip', loadChildren: () => import('../payslip-page/payslip-page.module').then(m => m.PayslipPageModule) },
+  { path: '',   redirectTo: '/payslip', pathMatch: 'full' },
+  { path: '**',   redirectTo: '/payslip' }
 ];
 
 @NgModule({

@@ -10,9 +10,7 @@
     </mat-select>
   </mat-form-field>
 
-  <p *ngIf="taxAdditive">
-    {{ taxAdditive.description }}
-  </p>
+  <p *ngIf="taxAdditive" [innerHTML]="taxAdditive.description"></p>
 
   <mat-form-field class="form-control">
     <mat-label>Value</mat-label>

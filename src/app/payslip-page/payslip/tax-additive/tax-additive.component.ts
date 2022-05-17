@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TaxAdditive } from '../../services/taxation.service';
+import { TaxAdditive } from '../models/tax-additive.model';
 
 @Component({
   selector: 'app-tax-additive',

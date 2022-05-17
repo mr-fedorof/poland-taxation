@@ -6,24 +6,20 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { TaxationRoutingModule } from './taxation-routing.module';
-import { TaxationComponent } from './taxation.component';
-import { PayslipComponent } from './payslip/payslip.component';
-import { TaxAdditiveComponent } from './payslip/tax-additive/tax-additive.component';
+import { TaxElementExplanationDialogComponent } from './tax-element-explanation-dialog/tax-element-explanation-dialog.component';
+import { PayslipComponent } from './payslip.component';
+import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
+import { TaxElementComponent } from './tax-element/tax-element.component';
 
 @NgModule({
   declarations: [
-    TaxationComponent,
     PayslipComponent,
-    TaxAdditiveComponent
+    TaxAdditiveComponent,
+    TaxElementExplanationDialogComponent,
+    TaxElementComponent
   ],
   imports: [
-    TaxationRoutingModule,
-    MatSidenavModule,
-    MatListModule,
     MatInputModule,
     MatSelectModule,
     MatCardModule,
@@ -35,7 +31,7 @@ import { TaxAdditiveComponent } from './payslip/tax-additive/tax-additive.compon
     MatDialogModule
   ],
   exports: [
-    TaxationComponent
+    PayslipComponent
   ]
 })
-export class TaxationModule { }
+export class PayslipModule { }

@@ -8,12 +8,6 @@ export interface TaxationParameters {
   pit2Enabled: boolean;
 }
 
-export interface TaxAdditive {
-  name: string;
-  description: string;
-  taxable: boolean;
-}
-
 export interface TaxAdditiveValue {
   name: string;
   taxable: boolean;

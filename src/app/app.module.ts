@@ -3,8 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FooterModule } from './footer/footer.module';
-import { HeaderModule } from './header/header.module';
 import { MainModule } from './main/main.module';
 
 @NgModule({
@@ -15,9 +13,7 @@ import { MainModule } from './main/main.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HeaderModule,
-    MainModule,
-    FooterModule
+    MainModule
   ],
   providers: [],
   bootstrap: [AppComponent]

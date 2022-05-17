@@ -1,0 +1,7 @@
+<ng-container *ngIf="defaultViewEnabled; else defaultView">
+  {{ name }}
+</ng-container>
+
+<ng-template #defaultView>
+  <ng-content></ng-content>
+</ng-template>

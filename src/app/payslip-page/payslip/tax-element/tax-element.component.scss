@@ -1,0 +1,10 @@
+:host {
+  display: inline;
+
+  &.default-view {
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}
