@@ -1,7 +1,22 @@
-<ng-container *ngIf="defaultViewEnabled; else defaultView">
-  {{ name }}
+
+<ng-container *ngIf="valueParam; else defaultView">
+  <span *ngIf="!formula">{{ valueParam }}</span>
+  <span *ngIf="formula" [satPopoverAnchor]="popover" satPopoverHover>{{ valueParam }}</span>
 </ng-container>
 
 <ng-template #defaultView>
-  <ng-content></ng-content>
+  <span *ngIf="!formula">{{ name }}</span>
+  <span *ngIf="formula" [satPopoverAnchor]="popover" satPopoverHover>{{ name }}</span>
 </ng-template>
+
+<sat-popover
+  #popover
+  horizontalAlign="center"
+  verticalAlign="below"
+  [autoFocus]="false"
+  panelClass="popover"
+  (afterOpen)="onAfterOpenFormulaPopover()"
+  (afterClose)="onAfterCloseFormulaPopover()"
+>
+  {{ formattedFormula }}
+</sat-popover>

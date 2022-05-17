@@ -13,4 +13,8 @@ export class TaxElementRegistryService {
   public remove(taxElementId: TaxElementId): void {
     this.map.delete(taxElementId);
   }
+
+  public get(taxElementId: TaxElementId): TaxElementComponent {
+    return this.map.get(taxElementId)!;
+  }
 }

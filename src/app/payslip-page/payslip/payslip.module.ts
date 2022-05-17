@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { SatPopoverModule } from '@ncstate/sat-popover';
 import { TaxElementExplanationDialogComponent } from './tax-element-explanation-dialog/tax-element-explanation-dialog.component';
 import { PayslipComponent } from './payslip.component';
 import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
@@ -28,7 +29,8 @@ import { TaxElementComponent } from './tax-element/tax-element.component';
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    SatPopoverModule
   ],
   exports: [
     PayslipComponent

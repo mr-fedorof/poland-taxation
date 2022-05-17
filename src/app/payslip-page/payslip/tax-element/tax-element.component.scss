@@ -1,10 +1,15 @@
 :host {
   display: inline;
+  cursor: default;
 
-  &.default-view {
+  &.has-explanation {
     &:hover {
       cursor: pointer;
       text-decoration: underline;
     }
+  }
+
+  &.highlight {
+    background: rgba(255, 0, 0, 0.2);
   }
 }

@@ -8,6 +8,7 @@ import { TaxAdditive } from './models/tax-additive.model';
 import { TaxElementId } from './models/tax-element-id.model';
 import { TaxElement } from './models/tax-element.model';
 import { TaxElementRegistryService } from './services/tax-element-registry.service';
+import { TaxElements } from './services/tax-elements';
 import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
 
 @Component({
@@ -19,6 +20,8 @@ import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
   ]
 })
 export class PayslipComponent implements OnInit {
+  public readonly TaxElementId: typeof TaxElementId = TaxElementId;
+
   public readonly months: string[] = MONTHS;
   public readonly currentDate: Date = new Date();
 
@@ -255,182 +258,11 @@ export class PayslipComponent implements OnInit {
 
   public taxAdditivesMap: Map<string, TaxAdditive> = new Map(this.taxAdditives.map(_ => ([_.name, _])));
 
-  public pkupTaxElement: TaxElement = {
-    id: TaxElementId.Pkup,
-    name: 'Honorarium_PKUP',
-    title: '',
-    description: ''
-  }
-
-  public pkupReduceTaxElement: TaxElement = {
-    id: TaxElementId.PkupReduce,
-    name: 'Honorarium_pomniejszenie',
-    title: '',
-    description: ''
-  }
-
-  public retirementTaxElement: TaxElement = {
-    id: TaxElementId.Retirement,
-    name: 'EMER',
-    title: 'Пенсионное обеспечение',
-    description: `
-      <p>Взнос в пенсионный фонд.</p>
-      <p>Работник - 9,76%</p>
-      <p>Работодатель - 9,76%</p>
-    `
-  }
-
-  public disabilityTaxElement: TaxElement = {
-    id: TaxElementId.Disability,
-    name: 'RENT',
-    title: 'Обеспечение по инвалидности',
-    description: `
-      <p>Работодатель - 6,5%</br>Работник - 1,5%</p>
-      <p>Страхование на случай потери работоспособности – получение инвалидности, которая не позволит далее исполнять свои функции в полном объеме. Фонд, из которого будет формироваться пособие по инвалидностиs.</p>
-    `
-  }
-
-  public sicknessTaxElement: TaxElement = {
-    id: TaxElementId.Sickness,
-    name: 'CHOR',
-    title: 'Оплата больничного',
-    description: `
-      <p>Работодатель - 0%</br>Работник - 2,45%</p>
-      <p>Фонд, из которого оплачивают больничный.</p>`
-  }
-
-  public accidentTaxElement: TaxElement = {
-    id: TaxElementId.Accident,
-    name: 'WYP',
-    title: '',
-    description: ''
-  }
-
-  public fpTaxElement: TaxElement = {
-    id: TaxElementId.Fp,
-    name: 'FP',
-    title: '',
-    description: ''
-  }
-
-  public fgspTaxElement: TaxElement = {
-    id: TaxElementId.Fgsp,
-    name: 'FGŚP',
-    title: '',
-    description: ''
-  }
-
-  public fepTaxElement: TaxElement = {
-    id: TaxElementId.Fep,
-    name: 'FEP',
-    title: '',
-    description: ''
-  }
-
-  public socialContributionTaxElement: TaxElement = {
-    id: TaxElementId.SocialContribution,
-    name: 'RAZEM SKŁ. ZUS',
-    title: '',
-    description: '',
-    formula: ''
-  }
-
-  public ppkBasicContributionTaxElement: TaxElement = {
-    id: TaxElementId.PpkBasicContribution,
-    name: 'PPK P',
-    title: '',
-    description: ''
-  }
-
-  public ppkAdditionalContributionTaxElement: TaxElement = {
-    id: TaxElementId.PpkAdditionalContribution,
-    name: 'PPK D',
-    title: '',
-    description: ''
-  }
-
-  public healthInsuranceContributionBaseElement: TaxElement = {
-    id: TaxElementId.HealthInsuranceContributionBase,
-    name: 'PODST. ZDROW.',
-    title: '',
-    description: ''
-  }
-
-  public healthInsuranceContributionElement: TaxElement = {
-    id: TaxElementId.HealthInsuranceContribution,
-    name: 'ZDROW.',
-    title: '',
-    description: ''
-  }
-
-  public zaniechPodElement: TaxElement = {
-    id: TaxElementId.ZaniechPod,
-    name: 'ZANIECH. POD.',
-    title: '',
-    description: ''
-  }
-
-  public incomeTaxElement: TaxElement = {
-    id: TaxElementId.IncomeTax,
-    name: 'ZAL. POD.',
-    title: '',
-    description: ''
-  }
-
-  public deductibleExpensesElement: TaxElement = {
-    id: TaxElementId.DeductibleExpenses,
-    name: 'KOSZTY',
-    title: '',
-    description: ''
-  }
-
-  public middleClassTaxReliefElement: TaxElement = {
-    id: TaxElementId.MiddleClassTaxRelief,
-    name: 'ULGA PRAC.',
-    title: '',
-    description: ''
-  }
-
-  public taxReliefElement: TaxElement = {
-    id: TaxElementId.TaxRelief,
-    name: 'ULGA POD.',
-    title: '',
-    description: ''
-  }
-
-  public cumulativeTaxBaseElement: TaxElement = {
-    id: TaxElementId.CumulativeTaxBase,
-    name: 'Podstawa podatku:',
-    title: '',
-    description: 'Amount of taxable income (tax base) from January to the current month' +
-      '<\/br>' +
-      'When the income exceeds the threshold of 120 000 PLN, it is taxed at higher rate (32% instead of 17%)' +
-      '<\/br>' +
-      'The amount is cumulative SUMA of taxable items reduced by social contributions and by Koszty'
-  }
-
-  public retirementDisabilityCumulativeBaseElement: TaxElement = {
-    id: TaxElementId.RetirementDisabilityCumulativeBase,
-    name: 'Podstawa składek emer.-rent.',
-    title: '',
-    description: 'Cumulative base for EMER. and RENT. contributions (cumulative base from January to the current month).' +
-      '<\/br>' +
-      'Contributions EMER. & RENT are stopped until the end of the year when the annual limit is reached (the limit is shown in upper right corner of the payslip, line “Podstawa składek emer.-rent”)' +
-      '<\/br>' +
-      'The annual limit of the base in 2022 are 177 660,00 PLN'
-  }
-
-  public taxPercentageElement: TaxElement = {
-    id: TaxElementId.TaxPercentage,
-    name: 'Procent podatku',
-    title: '',
-    description: '17% or 32% tax (or 17% / 32% in the month when the threshold of 120 000 PLN is reached)'
-  }
-
   constructor(
     private readonly taxationService: TaxationService,
     private readonly formBuilder: FormBuilder,
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    public readonly taxElements: TaxElements
   ) {
   }
 

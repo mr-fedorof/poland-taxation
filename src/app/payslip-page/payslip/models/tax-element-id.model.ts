@@ -1,14 +1,49 @@
 export enum TaxElementId {
+  TotalGross = 'TotalGross',
+  TotalGrossValue = 'TotalGrossValue',
+
+  SocialContribution = 'SocialContribution',
+  SocialContributionEmployer = 'SocialContributionEmployer',
+  SocialContributionEmployee = 'SocialContributionEmployee',
+
+  Retirement = 'Retirement',
+  RetirementBase = 'RetirementBase',
+  RetirementEmployer = 'RetirementEmployer',
+  RetirementEmployee = 'RetirementEmployee',
+
+  Disability = 'Disability',
+  DisabilityBase = 'DisabilityBase',
+  DisabilityEmployer = 'DisabilityEmployer',
+  DisabilityEmployee = 'DisabilityEmployee',
+
+  Sickness = 'Sickness',
+  SicknessBase = 'SicknessBase',
+  SicknessEmployer = 'SicknessEmployer',
+  SicknessEmployee = 'SicknessEmployee',
+
+  Accident = 'Accident',
+  AccidentBase = 'AccidentBase',
+  AccidentEmployer = 'AccidentEmployer',
+  AccidentEmployee = 'AccidentEmployee',
+
+  Fp = 'Fp',
+  FpBase = 'FpBase',
+  FpEmployer = 'FpEmployer',
+  FpEmployee = 'FpEmployee',
+
+  Fgsp = 'Fgsp',
+  FgspBase = 'FgspBase',
+  FgspEmployer = 'FgspEmployer',
+  FgspEmployee = 'FgspEmployee',
+
+  Fep = 'Fep',
+  FepBase = 'FepBase',
+  FepEmployer = 'FepEmployer',
+  FepEmployee = 'FepEmployee',
+
   Pkup = 'Pkup',
   PkupReduce = 'PkupReduce',
-  Retirement = 'Retirement',
-  Disability = 'Disability',
-  Sickness = 'Sickness',
-  Accident = 'Accident',
-  Fp = 'Fp',
-  Fgsp = 'Fgsp',
-  Fep = 'Fep',
-  SocialContribution = 'SocialContribution',
+
   PpkBasicContribution = 'PpkBasicContribution',
   PpkAdditionalContribution = 'PpkAdditionalContribution',
   HealthInsuranceContributionBase = 'HealthInsuranceContributionBase',
