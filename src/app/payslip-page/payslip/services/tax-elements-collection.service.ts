@@ -6,6 +6,24 @@ import { TaxElement } from '../models/tax-element.model';
   providedIn: 'root'
 })
 export class TaxElementsCollection {
+  public readonly withTaxTaxElement: TaxElement = {
+    id: TaxElementId.WithTax,
+    name: 'OPODATKOWANE',
+    hint: 'Облагаемое налогом',
+  }
+
+  public readonly withoutTaxTaxElement: TaxElement = {
+    id: TaxElementId.WithoutTax,
+    name: 'NIEOPODATKOWANE',
+    hint: 'Не облагаемое налогом',
+  }
+
+  public readonly taxAdditiveNameTaxElement: TaxElement = {
+    id: TaxElementId.TaxAdditiveName,
+    name: 'NAZWA ELEMENTU',
+    hint: 'Название элемента',
+  }
+
   public readonly employeeTaxElement: TaxElement = {
     id: TaxElementId.Employee,
     name: 'UBEZPIECZ',
@@ -32,26 +50,6 @@ export class TaxElementsCollection {
   public readonly totalGrossValueTaxElement: TaxElement = {
     id: TaxElementId.TotalGrossValue,
     name: 'SUMA',
-  }
-
-  public readonly pkupTaxElement: TaxElement = {
-    id: TaxElementId.PkupTaxAdditive,
-    name: 'Honorarium_PKUP',
-  }
-
-  public readonly pkupValueTaxElement: TaxElement = {
-    id: TaxElementId.PkupTaxAdditiveValue,
-    name: 'Honorarium_PKUP',
-  }
-
-  public readonly pkupReduceTaxElement: TaxElement = {
-    id: TaxElementId.PkupReduceTaxAdditive,
-    name: 'Honorarium_pomniejszenie',
-  }
-
-  public readonly pkupReduceValueTaxElement: TaxElement = {
-    id: TaxElementId.PkupReduceTaxAdditiveValue,
-    name: 'Honorarium_pomniejszenie',
   }
 
   public readonly retirementTaxElement: TaxElement = {
@@ -322,7 +320,7 @@ export class TaxElementsCollection {
   public readonly incomeTaxValueElement: TaxElement = {
     id: TaxElementId.IncomeTaxValue,
     name: 'ZAL. POD.',
-    formula: `Round([${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.DeductibleExpensesValue}] - [${TaxElementId.MiddleClassTaxReliefValue}])`
+    formula: `Round( ( [${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.DeductibleExpensesValue}] - [${TaxElementId.MiddleClassTaxReliefValue}] ) * [${TaxElementId.TaxPercentageValue}] - [${TaxElementId.TaxReliefValue}])`
   }
 
   public readonly deductibleExpensesElement: TaxElement = {
@@ -334,7 +332,7 @@ export class TaxElementsCollection {
   public readonly deductibleExpensesValueElement: TaxElement = {
     id: TaxElementId.DeductibleExpensesValue,
     name: 'KOSZTY',
-    formula: `( [${TaxElementId.PkupTaxAdditiveValue}] – ([${TaxElementId.PkupTaxAdditiveValue}] * 13.71% [ social contribution ] ) ) * 50% + 250 [ if live inside ] + 300 [ if live outside ]`
+    formula: `( [${TaxElementId.PkupValueTaxAdditive}] – ([${TaxElementId.PkupValueTaxAdditive}] * 13.71% [ social contribution ] ) ) * 50% + 250 [ if live inside ] + 300 [ if live outside ]`
   }
 
   public readonly middleClassTaxReliefElement: TaxElement = {
@@ -374,28 +372,55 @@ export class TaxElementsCollection {
 
   public readonly cumulativeTaxBaseElement: TaxElement = {
     id: TaxElementId.CumulativeTaxBase,
-    name: 'Podstawa podatku:',
-    description: 'Amount of taxable income (tax base) from January to the current month' +
-      '<\/br>' +
-      'When the income exceeds the threshold of 120 000 PLN, it is taxed at higher rate (32% instead of 17%)' +
-      '<\/br>' +
-      'The amount is cumulative SUMA of taxable items reduced by social contributions and by Koszty'
+    name: 'Podstawa podatku',
+    title: 'Накопленный налогооблагаемый доход',
+    description: `
+      <p>Сумма налогооблагаемого дохода с января по текущий месяц, от которой зависит подоходный налог:</p>
+      <p>от 0 до 30 000 - 0%</p>
+      <p>от 30 000 до 120 000 - 17%</p>
+      <p>от 120 000 - 32%</p>
+    `,
+    hint: 'Сумма налогооблагаемого дохода с января по текущий месяц',
+  }
+
+  public readonly cumulativeTaxBaseValueElement: TaxElement = {
+    id: TaxElementId.CumulativeTaxBaseValue,
+    name: 'Podstawa podatku',
+    formula: `SUM FOR THE PREVIOUS MONTHS + ([${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.DeductibleExpensesValue}])`
   }
 
   public readonly retirementDisabilityCumulativeBaseElement: TaxElement = {
     id: TaxElementId.RetirementDisabilityCumulativeBase,
     name: 'Podstawa składek emer.-rent.',
-    description: 'Cumulative base for EMER. and RENT. contributions (cumulative base from January to the current month).' +
-      '<\/br>' +
-      'Contributions EMER. & RENT are stopped until the end of the year when the annual limit is reached (the limit is shown in upper right corner of the payslip, line “Podstawa składek emer.-rent”)' +
-      '<\/br>' +
-      'The annual limit of the base in 2022 are 177 660,00 PLN'
+    title: 'Накопительная база для пенсионного фонда (EMER) и обеспечение по инвалидности (RENT)',
+    description: `
+      <p>Вклад в пенсионный фонд (EMER) и обеспечение по инвалидности (RENT) прекратится по достижении лимита.</p>
+      <p>Лимит устанавливается государством и для 2022го года равен 177660.00 PLN</p>
+    `,
+  }
+
+  public readonly retirementDisabilityCumulativeBaseValueElement: TaxElement = {
+    id: TaxElementId.RetirementDisabilityCumulativeBaseValue,
+    name: 'Podstawa składek emer.-rent.',
+    formula: `SUM FOR THE PREVIOUS MONTHS + [${TaxElementId.Base}]`
   }
 
   public readonly taxPercentageElement: TaxElement = {
     id: TaxElementId.TaxPercentage,
     name: 'Procent podatku',
-    description: '17% or 32% tax (or 17% / 32% in the month when the threshold of 120 000 PLN is reached)'
+    hint: 'Процент подоходного налога'
+  }
+
+  public readonly taxPercentageValueElement: TaxElement = {
+    id: TaxElementId.TaxPercentageValue,
+    name: 'Procent podatku',
+    title: 'Процент подоходного налога',
+    description: `
+      <p>Процент зависит от накопленной суммы налогооблагаемого дохода с января по текущий месяц:</p>
+      <p>от 0 до 30 000 - 0%</p>
+      <p>от 30 000 до 120 000 - 17%</p>
+      <p>от 120 000 - 32%</p>
+    `
   }
 
   private readonly _all: TaxElement[] = Object.values(this).filter(_ => !!_.id && !!TaxElementId[_.id as TaxElementId]);

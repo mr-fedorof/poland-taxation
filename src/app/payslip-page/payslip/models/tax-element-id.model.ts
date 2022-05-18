@@ -2,6 +2,9 @@ export enum TaxElementId {
   Employee = 'Employee',
   Employer = 'Employer',
   Base = 'Base',
+  WithTax = 'WithTax',
+  WithoutTax = 'WithoutTax',
+  TaxAdditiveName = 'TaxAdditiveName',
 
   TotalGross = 'TotalGross',
   TotalGrossValue = 'TotalGrossValue',
@@ -69,17 +72,20 @@ export enum TaxElementId {
   TaxRelief = 'TaxRelief',
   TaxReliefValue = 'TaxReliefValue',
   CumulativeTaxBase = 'CumulativeTaxBase',
+  CumulativeTaxBaseValue = 'CumulativeTaxBaseValue',
   RetirementDisabilityCumulativeBase = 'RetirementDisabilityCumulativeBase',
+  RetirementDisabilityCumulativeBaseValue = 'RetirementDisabilityCumulativeBaseValue',
   TaxPercentage = 'TaxPercentage',
+  TaxPercentageValue = 'TaxPercentageValue',
   TotalNet = 'TotalNet',
   TotalNetValue = 'TotalNetValue',
 
   // Tax Additives
 
   PkupTaxAdditive = 'PkupTaxAdditive',
-  PkupTaxAdditiveValue = 'PkupTaxAdditiveValue',
+  PkupValueTaxAdditive = 'PkupValueTaxAdditive',
   PkupReduceTaxAdditive = 'PkupReduceTaxAdditive',
-  PkupReduceTaxAdditiveValue = 'PkupReduceTaxAdditiveValue',
+  PkupReduceValueTaxAdditive = 'PkupReduceValueTaxAdditive',
   BaseSalaryTaxAdditive = 'BaseSalaryTaxAdditive',
   SickPayTaxAdditive = 'SickPayTaxAdditive',
   SickAllowance1TaxAdditive = 'SickAllowance1TaxAdditive',

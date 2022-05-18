@@ -41,7 +41,7 @@ export class PayslipComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.taxAdditives = this.taxAdditivesCollection.getAll();
+    this.taxAdditives = this.taxAdditivesCollection.getVisibleTaxAdditives();
 
     this.customizationForm = this.formBuilder.group({
       month: this.formBuilder.control(0),
@@ -63,10 +63,6 @@ export class PayslipComponent implements OnInit {
           pit2Enabled: value.pit2Enabled
         });
       });
-
-    this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 11550);
-    this.addTaxAdditive(this.taxAdditivesCollection.getByName('Bonus')!, 6833.28);
-    this.customizationForm.controls['pkup'].setValue(3501);
   }
 
   public onAddTaxAdditive(): void {
@@ -82,6 +78,10 @@ export class PayslipComponent implements OnInit {
         this.addTaxAdditive(result.taxAdditive, result.value);
       }
     });
+  }
+
+  public onTaxAdditiveDeleteClick(index: number): void {
+    this.removeTaxAdditive(index);
   }
 
   public sumTaxAdditives(taxAdditives: TaxAdditiveValue[], taxable: boolean): number {

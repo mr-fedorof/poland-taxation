@@ -26,8 +26,8 @@ export interface Taxation {
   ppkBasicContribution: DistributeTax;
   ppkAdditionalContribution: DistributeTax;
   healthInsuranceContribution: DistributeTax;
-  taxBase: number;
   cumulativeTaxBase: number;
+  cumulativeRetirementDisabilityBase: number;
   incomeTax: number;
   deductibleExpenses: number;
   middleClassTaxRelief: number;
@@ -106,11 +106,11 @@ export class TaxationService {
         disability.employee,
         sickness.employee),
       employer: this.sum(
-        retirement.employee,
-        disability.employee,
-        accident.employee,
-        fgsp.employee,
-        fp.employee),
+        retirement.employer,
+        disability.employer,
+        accident.employer,
+        fgsp.employer,
+        fp.employer),
     };
 
     const ppkBasicContribution: DistributeTax = {
@@ -164,11 +164,10 @@ export class TaxationService {
 
     // Income tax paid to the Tax Office and deducted from gross pay
     // Taxable elements - Sum of employee’s social contributions – KOSZTY – ULGA PRAC. = Tax base (rounded to full PLN)
-    const taxBase: number = Math.round(totalGross - socialContribution.employee - deductibleExpenses - middleClassTaxRelief);
-    const cumulativeTaxBase: number = taxBase;
+    const taxBase: number = Math.max(Math.round(totalGross - socialContribution.employee - deductibleExpenses - middleClassTaxRelief), 0);
 
     // Procent podatku (tax %) -17% or 32% (or 17% / 32% in the month when the threshold of 120 000 PLN is reached)
-    const incomeTax: number = Math.round((taxBase * 0.17) - taxRelief);
+    const incomeTax: number = Math.max(Math.round((taxBase * 0.17) - taxRelief), 0);
 
     // RAZEM / ROR  = SUMA - Pakiet (MyBenefit) - RAZEM SKŁ. ZUS  {UBEZPIECZ. Line} - ZDROW. - ZAL. POD - PPK P {UBEZPIECZ. + PŁATNIK lines}
     const totalNet: number = totalGross - this.sum(
@@ -178,6 +177,9 @@ export class TaxationService {
       ppkBasicContribution.employee,
       ppkBasicContribution.employer
     );
+
+    const cumulativeTaxBase: number = Math.max(totalGross - socialContribution.employee - deductibleExpenses, 0);
+    const cumulativeRetirementDisabilityBase: number = socialContributionBase;
 
     return {
       retirement: retirement,
@@ -191,8 +193,8 @@ export class TaxationService {
       ppkBasicContribution: ppkBasicContribution,
       ppkAdditionalContribution: ppkAdditionalContribution,
       healthInsuranceContribution: healthInsuranceContribution,
-      taxBase: taxBase,
       cumulativeTaxBase: cumulativeTaxBase,
+      cumulativeRetirementDisabilityBase: cumulativeRetirementDisabilityBase,
       incomeTax: incomeTax,
       deductibleExpenses: deductibleExpenses,
       middleClassTaxRelief: middleClassTaxRelief,

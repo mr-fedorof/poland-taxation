@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TaxAdditive } from '../models/tax-additive.model';
 import { TaxElementId } from '../models/tax-element-id.model';
 import { TaxElement } from '../models/tax-element.model';
+import { TaxAdditivesCollection } from '../services/tax-additives-collection.service';
 import { TaxElementRegistryService } from '../services/tax-element-registry.service';
 import { TaxElementsCollection } from '../services/tax-elements-collection.service';
 import {
@@ -40,7 +41,8 @@ export class TaxElementComponent implements OnInit, OnDestroy {
   constructor(
     private readonly dialog: MatDialog,
     private readonly taxElementRegistryService: TaxElementRegistryService,
-    private readonly taxElements: TaxElementsCollection
+    private readonly taxElementsCollection: TaxElementsCollection,
+    private readonly taxAdditivesCollection: TaxAdditivesCollection
   ) {
   }
 
@@ -53,7 +55,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
     this.formula = this.getFormula();
     this.formulaRelatedTaxElementIds = this.getFormulaRelatedTaxElementIds(this.formula);
     this.formattedFormula = this.formatFormula(this.formula);
-    this.hasExplanation = !this.valueParam && (!!this.title || !!this.description);
+    this.hasExplanation = !!this.title || !!this.description;
 
     if (this.taxElementId) {
       this.taxElementRegistryService.add(this.taxElementId, this);
@@ -109,7 +111,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
   }
 
   private getHint(): string {
-    return this.taxElementParam?.hint ?? '';
+    return this.taxElementParam?.hint ?? this.taxAdditiveParam?.hint ?? '';
   }
 
   private getFormulaRelatedTaxElementIds(formula: string): TaxElementId[] {
@@ -123,7 +125,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
     const relatedElementMatcher: RegExp = /(\[(\w+)\])/ig;
 
     return formula.replaceAll(relatedElementMatcher, (m, v1, v2) => {
-      return this.taxElements.getById(v2)?.name ?? v2;
+      return this.taxElementsCollection.getById(v2)?.name ?? this.taxAdditivesCollection.getById(v2)?.name ?? v2;
     });
   }
 }

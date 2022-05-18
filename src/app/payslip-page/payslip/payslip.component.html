@@ -64,31 +64,31 @@
 
         </td>
         <td>
-          <table class="nested-table">
+          <table class="nested-table left-right-alignment">
             <tr>
               <td>Narastająco w roku:</td>
               <td>{{ currentDate | date : 'YYYY' }}</td>
             </tr>
             <tr>
               <td><app-tax-element [taxElement]="taxElementsCollection.cumulativeTaxBaseElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.taxBase | number: '1.2-2'"></app-tax-element></td>
+              <td><app-tax-element [taxElement]="taxElementsCollection.cumulativeTaxBaseValueElement" [value]="taxation.cumulativeTaxBase | number: '1.2-2'"></app-tax-element></td>
             </tr>
             <tr>
               <td><app-tax-element [taxElement]="taxElementsCollection.retirementDisabilityCumulativeBaseElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.cumulativeTaxBase | number: '1.2-2'"></app-tax-element></td>
+              <td><app-tax-element [taxElement]="taxElementsCollection.retirementDisabilityCumulativeBaseValueElement" [value]="taxation.cumulativeRetirementDisabilityBase | number: '1.2-2'"></app-tax-element></td>
             </tr>
           </table>
         </td>
       </tr>
       <tr>
-        <td>NAZWA ELEMENTU</td>
-        <td>OPODATKOWANE</td>
-        <td>NIEOPODATKOWANE</td>
+        <td><app-tax-element [taxElement]="taxElementsCollection.taxAdditiveNameTaxElement"></app-tax-element></td>
+        <td><app-tax-element [taxElement]="taxElementsCollection.withTaxTaxElement"></app-tax-element></td>
+        <td><app-tax-element [taxElement]="taxElementsCollection.withoutTaxTaxElement"></app-tax-element></td>
         <td>
-          <table class="nested-table">
+          <table class="nested-table left-right-alignment">
             <tr>
               <td><app-tax-element [taxElement]="taxElementsCollection.taxPercentageElement"></app-tax-element></td>
-              <td>17%</td>
+              <td><app-tax-element value="0% / 17% / 32%" [taxElement]="taxElementsCollection.taxPercentageValueElement"></app-tax-element></td>
             </tr>
           </table>
         </td>
@@ -96,20 +96,23 @@
       <tr>
         <td>
           <table class="nested-table">
-            <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
+            <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value; index as i">
               <td>
+                <button mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
+                  <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
+                </button>
                 <strong><app-tax-element [taxAdditive]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>
               </td>
             </tr>
             <ng-container *ngIf="customizationForm.controls['pkup'].value">
               <tr>
                 <td>
-                  <strong><app-tax-element [taxElement]="taxElementsCollection.pkupTaxElement"></app-tax-element></strong>
+                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupTaxAdditive"></app-tax-element></strong>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <strong><app-tax-element [taxElement]="taxElementsCollection.pkupReduceTaxElement"></app-tax-element></strong>
+                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupReduceTaxAdditive"></app-tax-element></strong>
                 </td>
               </tr>
             </ng-container>
@@ -119,18 +122,18 @@
           <table class="nested-table">
             <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
               <td>
-                <strong [class.hidden]="!taxAdditive.taxable">{{ taxAdditive.value | number: '1.2-2' }}</strong>
+                <strong [class.hidden]="!taxAdditive.taxable"><app-tax-element [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element></strong>
               </td>
             </tr>
             <ng-container *ngIf="customizationForm.controls['pkup'].value as pkupValue">
               <tr>
                 <td>
-                  <strong><app-tax-element [taxElement]="taxElementsCollection.pkupValueTaxElement" [value]="pkupValue | number: '1.2-2'"></app-tax-element></strong>
+                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupValueTaxAdditive" [value]="pkupValue | number: '1.2-2'"></app-tax-element></strong>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <strong><app-tax-element [taxElement]="taxElementsCollection.pkupReduceValueTaxElement" [value]="-pkupValue | number: '1.2-2'"></app-tax-element></strong>
+                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupReduceValueTaxAdditive" [value]="-pkupValue | number: '1.2-2'"></app-tax-element></strong>
                 </td>
               </tr>
             </ng-container>
@@ -140,7 +143,7 @@
           <table class="nested-table">
             <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
               <td>
-                <strong [class.hidden]="taxAdditive.taxable">{{ taxAdditive.value | number: '1.2-2' }}</strong>
+                <strong [class.hidden]="taxAdditive.taxable"><app-tax-element [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element></strong>
               </td>
             </tr>
           </table>
