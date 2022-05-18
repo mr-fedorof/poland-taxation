@@ -45,9 +45,6 @@ export enum TaxElementId {
   FepEmployer = 'FepEmployer',
   FepEmployee = 'FepEmployee',
 
-  Pkup = 'Pkup',
-  PkupReduce = 'PkupReduce',
-
   PpkBasicContribution = 'PpkBasicContribution',
   PpkBasicContributionBase = 'PpkBasicContributionBase',
   PpkBasicContributionEmployer = 'PpkBasicContributionEmployer',
@@ -64,14 +61,25 @@ export enum TaxElementId {
   HealthInsuranceContributionValue = 'HealthInsuranceContributionValue',
   ZaniechPod = 'ZaniechPod',
   IncomeTax = 'IncomeTax',
+  IncomeTaxValue = 'IncomeTaxValue',
   DeductibleExpenses = 'DeductibleExpenses',
+  DeductibleExpensesValue = 'DeductibleExpensesValue',
   MiddleClassTaxRelief = 'MiddleClassTaxRelief',
+  MiddleClassTaxReliefValue = 'MiddleClassTaxReliefValue',
   TaxRelief = 'TaxRelief',
+  TaxReliefValue = 'TaxReliefValue',
   CumulativeTaxBase = 'CumulativeTaxBase',
   RetirementDisabilityCumulativeBase = 'RetirementDisabilityCumulativeBase',
   TaxPercentage = 'TaxPercentage',
+  TotalNet = 'TotalNet',
+  TotalNetValue = 'TotalNetValue',
 
   // Tax Additives
+
+  PkupTaxAdditive = 'PkupTaxAdditive',
+  PkupTaxAdditiveValue = 'PkupTaxAdditiveValue',
+  PkupReduceTaxAdditive = 'PkupReduceTaxAdditive',
+  PkupReduceTaxAdditiveValue = 'PkupReduceTaxAdditiveValue',
   BaseSalaryTaxAdditive = 'BaseSalaryTaxAdditive',
   SickPayTaxAdditive = 'SickPayTaxAdditive',
   SickAllowance1TaxAdditive = 'SickAllowance1TaxAdditive',

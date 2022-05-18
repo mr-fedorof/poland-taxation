@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { TaxAdditive } from '../models/tax-additive.model';
 import { TaxElementId } from '../models/tax-element-id.model';
 import { TaxElement } from '../models/tax-element.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaxElements {
+export class TaxElementsCollection {
   public readonly employeeTaxElement: TaxElement = {
     id: TaxElementId.Employee,
     name: 'UBEZPIECZ',
@@ -36,12 +35,22 @@ export class TaxElements {
   }
 
   public readonly pkupTaxElement: TaxElement = {
-    id: TaxElementId.Pkup,
+    id: TaxElementId.PkupTaxAdditive,
+    name: 'Honorarium_PKUP',
+  }
+
+  public readonly pkupValueTaxElement: TaxElement = {
+    id: TaxElementId.PkupTaxAdditiveValue,
     name: 'Honorarium_PKUP',
   }
 
   public readonly pkupReduceTaxElement: TaxElement = {
-    id: TaxElementId.PkupReduce,
+    id: TaxElementId.PkupReduceTaxAdditive,
+    name: 'Honorarium_pomniejszenie',
+  }
+
+  public readonly pkupReduceValueTaxElement: TaxElement = {
+    id: TaxElementId.PkupReduceTaxAdditiveValue,
     name: 'Honorarium_pomniejszenie',
   }
 
@@ -108,7 +117,7 @@ export class TaxElements {
   public readonly sicknessEmployerTaxElement: TaxElement = {
     id: TaxElementId.SicknessEmployer,
     name: 'CHOR (P)',
-    formula: `0`,
+    hint: `Не оплачивается`,
   }
 
   public readonly sicknessEmployeeTaxElement: TaxElement = {
@@ -138,7 +147,7 @@ export class TaxElements {
   public readonly accidentEmployeeTaxElement: TaxElement = {
     id: TaxElementId.AccidentEmployee,
     name: 'WYP (U)',
-    formula: `0`,
+    hint: `Не оплачивается`,
   }
 
   public readonly fpTaxElement: TaxElement = {
@@ -162,7 +171,7 @@ export class TaxElements {
   public readonly fpEmployeeTaxElement: TaxElement = {
     id: TaxElementId.FpEmployee,
     name: 'FP (U)',
-    formula: `0`,
+    hint: `Не оплачивается`,
   }
 
   public readonly fgspTaxElement: TaxElement = {
@@ -186,7 +195,7 @@ export class TaxElements {
   public readonly fgspEmployeeTaxElement: TaxElement = {
     id: TaxElementId.FgspEmployee,
     name: 'FGŚP (U)',
-    formula: `0`,
+    hint: `Не оплачивается`,
   }
 
   public readonly fepTaxElement: TaxElement = {
@@ -307,21 +316,60 @@ export class TaxElements {
   public readonly incomeTaxElement: TaxElement = {
     id: TaxElementId.IncomeTax,
     name: 'ZAL. POD.',
+    hint: 'Подоходный налог',
+  }
+
+  public readonly incomeTaxValueElement: TaxElement = {
+    id: TaxElementId.IncomeTaxValue,
+    name: 'ZAL. POD.',
+    formula: `Round([${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.DeductibleExpensesValue}] - [${TaxElementId.MiddleClassTaxReliefValue}])`
   }
 
   public readonly deductibleExpensesElement: TaxElement = {
     id: TaxElementId.DeductibleExpenses,
     name: 'KOSZTY',
+    hint: 'Расходы работника (понижение налога)',
+  }
+
+  public readonly deductibleExpensesValueElement: TaxElement = {
+    id: TaxElementId.DeductibleExpensesValue,
+    name: 'KOSZTY',
+    formula: `( [${TaxElementId.PkupTaxAdditiveValue}] – ([${TaxElementId.PkupTaxAdditiveValue}] * 13.71% [ social contribution ] ) ) * 50% + 250 [ if live inside ] + 300 [ if live outside ]`
   }
 
   public readonly middleClassTaxReliefElement: TaxElement = {
     id: TaxElementId.MiddleClassTaxRelief,
+    name: 'ULGA PRAC.',
+    hint: 'Помощь среднему классу',
+  }
+
+  public readonly middleClassTaxReliefValueElement: TaxElement = {
+    id: TaxElementId.MiddleClassTaxReliefValue,
     name: 'ULGA PRAC.',
   }
 
   public readonly taxReliefElement: TaxElement = {
     id: TaxElementId.TaxRelief,
     name: 'ULGA POD.',
+    hint: 'Понижение налога',
+  }
+
+  public readonly taxReliefValueElement: TaxElement = {
+    id: TaxElementId.TaxReliefValue,
+    name: 'ULGA POD.',
+    hint: '5100 / 12 [ PIT-2 ]'
+  }
+
+  public readonly totalNetElement: TaxElement = {
+    id: TaxElementId.TotalNet,
+    name: 'RAZEM',
+    hint: 'Зарплата NET'
+  }
+
+  public readonly totalNetValueElement: TaxElement = {
+    id: TaxElementId.TotalNetValue,
+    name: 'RAZEM',
+    formula: `[${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.HealthInsuranceContributionValue}] - [${TaxElementId.IncomeTaxValue}] - [${TaxElementId.PpkBasicContributionEmployee}] - [${TaxElementId.PpkAdditionalContributionEmployee}]`
   }
 
   public readonly cumulativeTaxBaseElement: TaxElement = {

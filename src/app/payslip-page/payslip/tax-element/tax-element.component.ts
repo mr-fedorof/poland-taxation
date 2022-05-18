@@ -4,7 +4,7 @@ import { TaxAdditive } from '../models/tax-additive.model';
 import { TaxElementId } from '../models/tax-element-id.model';
 import { TaxElement } from '../models/tax-element.model';
 import { TaxElementRegistryService } from '../services/tax-element-registry.service';
-import { TaxElements } from '../services/tax-elements';
+import { TaxElementsCollection } from '../services/tax-elements-collection.service';
 import {
   TaxElementExplanationDialogComponent
 } from '../tax-element-explanation-dialog/tax-element-explanation-dialog.component';
@@ -40,7 +40,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
   constructor(
     private readonly dialog: MatDialog,
     private readonly taxElementRegistryService: TaxElementRegistryService,
-    private readonly taxElements: TaxElements
+    private readonly taxElements: TaxElementsCollection
   ) {
   }
 
