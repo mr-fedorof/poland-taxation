@@ -113,6 +113,7 @@ export enum TaxElementId {
   Addon3TaxAdditive = 'Addon3TaxAdditive',
   VacationCompensationTaxAdditive = 'VacationCompensationTaxAdditive',
   PpkIncomeTaxAdditive = 'PpkIncomeTaxAdditive',
+  PpkIncomeValueTaxAdditive = 'PpkIncomeValueTaxAdditive',
   BailiffDeductionTaxAdditive = 'BailiffDeductionTaxAdditive',
   MyBenefitDeductionTaxAdditive = 'MyBenefitDeductionTaxAdditive',
   CashAdvanceDeductionTaxAdditive = 'CashAdvanceDeductionTaxAdditive',

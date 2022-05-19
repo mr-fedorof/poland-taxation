@@ -1,7 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { startWith } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  map,
+  ReplaySubject,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs';
 import { MONTHS } from '../../../modules/date';
 import { TaxAdditiveValue, Taxation, TaxationService } from '../../taxation/taxation.service';
 import { TaxAdditiveElement } from './models/tax-additive-element.model';
@@ -29,6 +39,7 @@ export class PayslipComponent implements OnInit {
     return this.customizationForm.controls['taxAdditives'].value;
   }
 
+  public taxationSource: ReplaySubject<Taxation> = new ReplaySubject<Taxation>(1);
   public taxation!: Taxation;
   public taxAdditives!: TaxAdditiveElement[];
 
@@ -73,6 +84,32 @@ export class PayslipComponent implements OnInit {
         }
       });
 
+    this.customizationForm.controls['ppkEnabled'].valueChanges
+      .pipe(
+        startWith(this.customizationForm.value.ppkEnabled),
+        distinctUntilChanged(),
+        switchMap(ppkEnabled => {
+          if (ppkEnabled) {
+            this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.ppkIncomeTaxAdditive, 0);
+
+            return this.taxationSource.asObservable()
+              .pipe(
+                filter(Boolean),
+                map(_ => _.ppkBasicContribution.employer + _.ppkAdditionalContribution.employer),
+                distinctUntilChanged(),
+                tap((ppkIncome: number) => {
+                  this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.ppkIncomeTaxAdditive, ppkIncome);
+                })
+              );
+          } else {
+            this.removeTaxAdditiveById(TaxElementId.PpkIncomeTaxAdditive);
+
+            return EMPTY;
+          }
+        }),
+      )
+      .subscribe();
+
     this.customizationForm.valueChanges
       .pipe(startWith(this.customizationForm.value))
       .subscribe(value => {
@@ -89,6 +126,8 @@ export class PayslipComponent implements OnInit {
           tax3: value.tax3,
           retirementDisabilityBaseThreshold: value.retirementDisabilityBaseThreshold
         });
+
+        this.taxationSource.next(this.taxation);
       });
 
     this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 10000);

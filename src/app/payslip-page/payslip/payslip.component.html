@@ -138,7 +138,7 @@
           <table class="nested-table">
             <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value; index as i">
               <td>
-                <button mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
+                <button *ngIf="!taxAdditivesCollection.getById(taxAdditive.id)?.system" mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
                   <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
                 </button>
                 <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>

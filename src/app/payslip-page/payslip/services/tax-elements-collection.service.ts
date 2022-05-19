@@ -388,7 +388,7 @@ export class TaxElementsCollection {
   public readonly totalNetValueElement: TaxElement = {
     id: TaxElementId.TotalNetValue,
     name: 'RAZEM',
-    formula: `[${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.HealthInsuranceContributionValue}] - [${TaxElementId.IncomeTaxValue}] - [${TaxElementId.PpkBasicContributionEmployee}] - [${TaxElementId.PpkAdditionalContributionEmployee}]`
+    formula: `[${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.HealthInsuranceContributionValue}] - [${TaxElementId.IncomeTaxValue}] - [${TaxElementId.PpkBasicContributionEmployee}] - [${TaxElementId.PpkAdditionalContributionEmployee}] - [${TaxElementId.PpkIncomeValueTaxAdditive}]`
   }
 
   public readonly cumulativeTaxBaseElement: TaxElement = {

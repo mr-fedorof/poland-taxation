@@ -52,6 +52,23 @@ export class TaxAdditiveElementsCollection {
     system: true,
   }
 
+  public readonly ppkIncomeTaxAdditive: TaxAdditiveElement = {
+    id: TaxElementId.PpkIncomeTaxAdditive,
+    name: 'Przychód z tytułu PPK/E',
+    taxable: true,
+    taxableValueId: TaxElementId.PpkIncomeValueTaxAdditive,
+    system: true,
+    hint: 'Доход от PPK',
+  };
+
+  public readonly ppkIncomeValueTaxAdditive: TaxAdditiveElement = {
+    id: TaxElementId.PpkIncomeValueTaxAdditive,
+    name: 'Przychód z tytułu PPK/E',
+    taxable: true,
+    system: true,
+    formula: `[${TaxElementId.PpkBasicContributionEmployer}] + [${TaxElementId.PpkAdditionalContributionEmployer}]`
+  };
+
   // public readonly sickPayTaxAdditive: TaxAdditive = {
   //   id: TaxElementId.SickPayTaxAdditive,
   //   title: 'wynagr.chorobowe',
@@ -233,14 +250,6 @@ export class TaxAdditiveElementsCollection {
   //   title: 'Ekwiwalent za niewykorzystany urlop',
   //   name: 'Ekwiwalent za niewykorzystany urlop',
   //   description: 'Compensation for unused vacations – paid for unused vacation days only in the case of leaving the company',
-  //   taxable: true
-  // };
-  //
-  // public readonly ppkIncomeTaxAdditive: TaxAdditive = {
-  //   id: TaxElementId.PpkIncomeTaxAdditive,
-  //   title: 'Przychód z tytułu PPK/E',
-  //   name: 'Przychód z tytułu PPK/E',
-  //   description: 'PPK income - employer share is subject to tax',
   //   taxable: true
   // };
   //

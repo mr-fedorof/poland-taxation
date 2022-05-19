@@ -54,7 +54,6 @@ export interface DistributeTax {
 // TODO: apply cumulative tax base as parameter
 // TODO: apply cumulative Retirement Disability base as parameter
 // TODO: apply tax additives
-// TODO: apply PPK tax additive with subtraction
 @Injectable({
   providedIn: 'root'
 })
@@ -232,7 +231,9 @@ export class TaxationService {
       healthInsuranceContribution.employee,
       incomeTax,
       ppkBasicContribution.employee,
-      ppkBasicContribution.employer
+      ppkAdditionalContribution.employee,
+      ppkBasicContribution.employer,
+      ppkAdditionalContribution.employer
     );
 
     return {
