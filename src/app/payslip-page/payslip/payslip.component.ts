@@ -76,11 +76,7 @@ export class PayslipComponent implements OnInit {
         });
       });
 
-    // this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 11550);
-    // this.addTaxAdditive(this.taxAdditivesCollection.getByName('Bonus')!, 6833.28);
-    // this.customizationForm.controls['pkup'].setValue(3501);
-
-    this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 11141);
+    this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 10000);
   }
 
   public onAddTaxAdditive(): void {
