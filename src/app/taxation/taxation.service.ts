@@ -48,6 +48,12 @@ export interface DistributeTax {
   employee: number;
 }
 
+// TODO: apply cumulativeRetirementDisabilityBase
+// TODO: apply PKUP max
+// TODO: apply cumulative tax base as parameter
+// TODO: apply cumulative Retirement Disability base as parameter
+// TODO: apply tax additives
+// TODO: apply PPK tax additive with subtraction
 @Injectable({
   providedIn: 'root'
 })
