@@ -1,50 +1,53 @@
-<mat-card>
-  <mat-card-title>Payslip</mat-card-title>
-
-  <mat-card-content>
-    <div [formGroup]="customizationForm"  class="customization">
-      <section class="section">
-        <mat-form-field class="form-control form-control-small" appearance="fill">
+<div [formGroup]="customizationForm" class="customization">
+  <mat-tab-group>
+    <mat-tab label="Tax Limits">
+      <section class="tab-content">
+        <mat-form-field class="form-control tax" appearance="fill">
           <mat-label>Tax 1</mat-label>
           <input matInput type="number" formControlName="tax1">
         </mat-form-field>
 
-        <mat-form-field class="form-control form-control-medium" appearance="fill">
+        <mat-form-field class="form-control tax-threshold" appearance="fill">
           <mat-label>Tax Threshold</mat-label>
           <input matInput type="number" formControlName="taxThreshold12">
         </mat-form-field>
 
-        <mat-form-field class="form-control form-control-small" appearance="fill">
+        <mat-form-field class="form-control tax" appearance="fill">
           <mat-label>Tax 2</mat-label>
           <input matInput type="number" formControlName="tax2">
         </mat-form-field>
 
-        <mat-form-field class="form-control form-control-medium" appearance="fill">
+        <mat-form-field class="form-control tax-threshold" appearance="fill">
           <mat-label>Tax Threshold</mat-label>
           <input matInput type="number" formControlName="taxThreshold23">
         </mat-form-field>
 
-        <mat-form-field class="form-control form-control-small" appearance="fill">
+        <mat-form-field class="form-control tax" appearance="fill">
           <mat-label>Tax 3</mat-label>
           <input matInput type="number" formControlName="tax3">
         </mat-form-field>
-
-        <mat-form-field class="form-control form-control-medium" appearance="fill">
-          <mat-label>Retirement & Disability Base Threshold</mat-label>
-          <input matInput type="number" formControlName="retirementDisabilityBaseThreshold">
-        </mat-form-field>
       </section>
+    </mat-tab>
 
-      <section class="section">
-        <mat-form-field class="form-control form-control-medium" appearance="fill">
+    <mat-tab label="PKUP">
+      <section class="tab-content">
+        <mat-form-field class="form-control" appearance="fill">
           <mat-label>PKUP</mat-label>
           <input matInput type="number" formControlName="pkup">
         </mat-form-field>
+      </section>
+    </mat-tab>
 
+    <mat-tab label="PPK">
+      <section class="tab-content">
         <div class="form-control">
           <mat-checkbox formControlName="ppkEnabled">PPK</mat-checkbox>
         </div>
+      </section>
+    </mat-tab>
 
+    <mat-tab label="Other">
+      <section class="tab-content">
         <div class="form-control">
           <mat-checkbox formControlName="liveOutside">Live Outside</mat-checkbox>
         </div>
@@ -52,253 +55,250 @@
         <div class="form-control">
           <mat-checkbox formControlName="pit2Enabled">PIT-2</mat-checkbox>
         </div>
-
-        <button mat-button color="primary" (click)="onAddTaxAdditive()" class="add-tax-additive-button">Add Tax Additive</button>
       </section>
-    </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
 
-    <table class="payslip">
-      <tr>
-        <td colspan="3">Pracownik: <strong>John Wick</strong></td>
-        <td>Podpis:</td>
-      </tr>
-      <tr>
-        <td>
+<mat-divider class="divider"></mat-divider>
 
-          <table class="nested-table left-right-alignment">
-            <tr>
-              <td>Za okres:</td>
-              <td>{{ months[customizationForm.controls['month'].value] }}</td>
-            </tr>
-            <tr>
-              <td>PESEL:</td>
-              <td>00000000000</td>
-            </tr>
-            <tr>
-              <td>Wymiar etatu:</td>
-              <td>1/1</td>
-            </tr>
-            <tr>
-              <td>Stawka:</td>
-              <td>00000 PLN/mies</td>
-            </tr>
-          </table>
+<table class="payslip">
+  <tr>
+    <td colspan="3">Pracownik: <strong>John Wick</strong></td>
+    <td>Podpis:</td>
+  </tr>
+  <tr>
+    <td>
 
-        </td>
-        <td colspan="2">
+      <table class="nested-table left-right-alignment">
+        <tr>
+          <td>Za okres:</td>
+          <td>{{ months[monthConfiguration.monthIndex] }}</td>
+        </tr>
+        <tr>
+          <td>PESEL:</td>
+          <td>00000000000</td>
+        </tr>
+        <tr>
+          <td>Wymiar etatu:</td>
+          <td>1/1</td>
+        </tr>
+        <tr>
+          <td>Stawka:</td>
+          <td>00000 PLN/mies</td>
+        </tr>
+      </table>
 
-          <table class="nested-table left-right-alignment">
-            <tr>
-              <td>Symbol:</td>
-              <td>X/XXXX/XX/XXXX/X</td>
-            </tr>
-            <tr>
-              <td>Tytuł ubezpieczenia:</td>
-              <td>000000</td>
-            </tr>
-            <tr>
-              <td>Oddział NFZ:</td>
-              <td>00X</td>
-            </tr>
-          </table>
+    </td>
+    <td colspan="2">
 
-        </td>
-        <td>
-          <table class="nested-table left-right-alignment">
-            <tr>
-              <td>Narastająco w roku:</td>
-              <td>{{ currentDate | date : 'YYYY' }}</td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.cumulativeTaxBaseElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.cumulativeTaxBaseValueElement" [value]="taxation.cumulativeTaxBase | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.retirementDisabilityCumulativeBaseElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.retirementDisabilityCumulativeBaseValueElement" [value]="taxation.cumulativeRetirementDisabilityBase | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td><app-tax-element [taxElement]="taxElementsCollection.taxAdditiveNameTaxElement"></app-tax-element></td>
-        <td><app-tax-element [taxElement]="taxElementsCollection.withTaxTaxElement"></app-tax-element></td>
-        <td><app-tax-element [taxElement]="taxElementsCollection.withoutTaxTaxElement"></app-tax-element></td>
-        <td>
-          <table class="nested-table left-right-alignment">
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.taxPercentageElement"></app-tax-element></td>
-              <td><app-tax-element value="0% / 17% / 32%" [taxElement]="taxElementsCollection.taxPercentageValueElement"></app-tax-element></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <table class="nested-table">
-            <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value; index as i">
-              <td>
-                <button *ngIf="!taxAdditivesCollection.getById(taxAdditive.id)?.system" mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
-                  <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
-                </button>
-                <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td>
-          <table class="nested-table">
-            <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
-              <td>
-                <strong [class.hidden]="!taxAdditive.taxable">
-                  <app-tax-element [taxElement]="taxElementsCollection.getTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
-                </strong>
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td>
-          <table class="nested-table">
-            <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
-              <td>
-                <strong [class.hidden]="taxAdditive.taxable">
-                  <app-tax-element [taxElement]="taxElementsCollection.getNonTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
-                </strong>
-              </td>
-            </tr>
-          </table>
-        </td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><app-tax-element [taxElement]="taxElementsCollection.totalGrossTaxElement"></app-tax-element></td>
-        <td><app-tax-element [value]="sumTaxAdditives(selectedTaxAdditives, true) | number: '1.2-2'" [taxElement]="taxElementsCollection.totalGrossValueTaxElement"></app-tax-element></td>
-        <td>{{ sumTaxAdditives(selectedTaxAdditives, false) | number: '1.2-2' }}</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td colspan="4">
+      <table class="nested-table left-right-alignment">
+        <tr>
+          <td>Symbol:</td>
+          <td>X/XXXX/XX/XXXX/X</td>
+        </tr>
+        <tr>
+          <td>Tytuł ubezpieczenia:</td>
+          <td>000000</td>
+        </tr>
+        <tr>
+          <td>Oddział NFZ:</td>
+          <td>00X</td>
+        </tr>
+      </table>
 
-          <table class="nested-table">
-            <tr>
-              <td></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.retirementTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.disabilityTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.sicknessTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.accidentTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.fpTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.fgspTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.fepTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.socialContributionTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.ppkBasicContributionTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.ppkAdditionalContributionTaxElement"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.baseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.retirement.base | number: '1.2-2'" [taxElement]="taxElementsCollection.retirementBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.disability.base | number: '1.2-2'" [taxElement]="taxElementsCollection.disabilityBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.sickness.base | number: '1.2-2'" [taxElement]="taxElementsCollection.sicknessBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.accident.base | number: '1.2-2'" [taxElement]="taxElementsCollection.accidentBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fp.base | number: '1.2-2'" [taxElement]="taxElementsCollection.fpBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fgsp.base | number: '1.2-2'" [taxElement]="taxElementsCollection.fgspBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fep.base | number: '1.2-2'" [taxElement]="taxElementsCollection.fepBaseTaxElement"></app-tax-element></td>
-              <td></td>
-              <td><app-tax-element [value]="taxation.ppkBasicContribution.base | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkBasicContributionBaseTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.ppkAdditionalContribution.base | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkAdditionalContributionBaseTaxElement"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.employeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.retirement.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.retirementEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.disability.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.disabilityEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.sickness.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.sicknessEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.accident.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.accidentEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fp.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.fpEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fgsp.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.fgspEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fep.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.fepEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.socialContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.socialContributionEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.ppkBasicContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkBasicContributionEmployeeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.ppkAdditionalContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkAdditionalContributionEmployeeTaxElement"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.employerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.retirement.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.retirementEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.disability.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.disabilityEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.sickness.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.sicknessEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.accident.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.accidentEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fp.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.fpEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fgsp.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.fgspEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.fep.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.fepEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.socialContribution.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.socialContributionEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.ppkBasicContribution.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkBasicContributionEmployerTaxElement"></app-tax-element></td>
-              <td><app-tax-element [value]="taxation.ppkAdditionalContribution.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkAdditionalContributionEmployerTaxElement"></app-tax-element></td>
-            </tr>
-          </table>
+    </td>
+    <td>
+      <table class="nested-table left-right-alignment">
+        <tr>
+          <td>Narastająco w roku:</td>
+          <td>YYYY</td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.cumulativeTaxBaseElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.cumulativeTaxBaseValueElement" [value]="taxation.cumulativeTaxBase | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.retirementDisabilityCumulativeBaseElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.retirementDisabilityCumulativeBaseValueElement" [value]="taxation.cumulativeRetirementDisabilityBase | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td><app-tax-element [taxElement]="taxElementsCollection.taxAdditiveNameTaxElement"></app-tax-element></td>
+    <td><app-tax-element [taxElement]="taxElementsCollection.withTaxTaxElement"></app-tax-element></td>
+    <td><app-tax-element [taxElement]="taxElementsCollection.withoutTaxTaxElement"></app-tax-element></td>
+    <td>
+      <table class="nested-table left-right-alignment">
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.taxPercentageElement"></app-tax-element></td>
+          <td><app-tax-element value="0% / 17% / 32%" [taxElement]="taxElementsCollection.taxPercentageValueElement"></app-tax-element></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table class="nested-table">
+        <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value; index as i">
+          <td>
+            <button *ngIf="!taxAdditivesCollection.getById(taxAdditive.id)?.system" mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
+              <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
+            </button>
+            <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <table class="nested-table">
+        <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
+          <td>
+            <strong [class.hidden]="!taxAdditive.taxable">
+              <app-tax-element [taxElement]="taxElementsCollection.getTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
+            </strong>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <table class="nested-table">
+        <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
+          <td>
+            <strong [class.hidden]="taxAdditive.taxable">
+              <app-tax-element [taxElement]="taxElementsCollection.getNonTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
+            </strong>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><app-tax-element [taxElement]="taxElementsCollection.totalGrossTaxElement"></app-tax-element></td>
+    <td><app-tax-element [value]="sumTaxAdditives(selectedTaxAdditives, true) | number: '1.2-2'" [taxElement]="taxElementsCollection.totalGrossValueTaxElement"></app-tax-element></td>
+    <td>{{ sumTaxAdditives(selectedTaxAdditives, false) | number: '1.2-2' }}</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td colspan="4">
 
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td colspan="2">
-          <table class="nested-table">
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionBaseElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionBaseValueElement" [value]="taxation.healthInsuranceContribution.base | number: '1.2-2'" [taxElement]="taxElementsCollection.healthInsuranceContributionBaseValueElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.incomeTaxElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.incomeTaxValueElement" [value]="taxation.incomeTax | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionValueElement" [value]="taxation.healthInsuranceContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.healthInsuranceContributionValueElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.deductibleExpensesElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.deductibleExpensesValueElement" [value]="taxation.deductibleExpenses | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.zaniechPodElement"></app-tax-element></td>
-              <td></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.middleClassTaxReliefElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.middleClassTaxReliefValueElement" [value]="taxation.middleClassTaxRelief | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.taxReliefElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.taxReliefValueElement" [value]="taxation.taxRelief | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-          </table>
-        </td>
-        <td>
-          <table class="nested-table">
-            <tr>
-              <td><app-tax-element [taxElement]="taxElementsCollection.totalNetElement"></app-tax-element></td>
-              <td><app-tax-element [taxElement]="taxElementsCollection.totalNetValueElement" [value]="taxation.totalNet | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-            <tr>
-              <td>w tym</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>GOT</td>
-              <td>{{ 0 | number: '1.2-2' }}</td>
-            </tr>
-            <tr>
-              <td>ROR</td>
-              <td><app-tax-element [value]="taxation.totalNet | number: '1.2-2'"></app-tax-element></td>
-            </tr>
-          </table>
+      <table class="nested-table">
+        <tr>
+          <td></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.retirementTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.disabilityTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.sicknessTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.accidentTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.fpTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.fgspTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.fepTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.socialContributionTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.ppkBasicContributionTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.ppkAdditionalContributionTaxElement"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.baseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.retirement.base | number: '1.2-2'" [taxElement]="taxElementsCollection.retirementBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.disability.base | number: '1.2-2'" [taxElement]="taxElementsCollection.disabilityBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.sickness.base | number: '1.2-2'" [taxElement]="taxElementsCollection.sicknessBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.accident.base | number: '1.2-2'" [taxElement]="taxElementsCollection.accidentBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fp.base | number: '1.2-2'" [taxElement]="taxElementsCollection.fpBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fgsp.base | number: '1.2-2'" [taxElement]="taxElementsCollection.fgspBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fep.base | number: '1.2-2'" [taxElement]="taxElementsCollection.fepBaseTaxElement"></app-tax-element></td>
+          <td></td>
+          <td><app-tax-element [value]="taxation.ppkBasicContribution.base | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkBasicContributionBaseTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.ppkAdditionalContribution.base | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkAdditionalContributionBaseTaxElement"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.employeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.retirement.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.retirementEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.disability.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.disabilityEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.sickness.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.sicknessEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.accident.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.accidentEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fp.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.fpEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fgsp.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.fgspEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fep.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.fepEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.socialContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.socialContributionEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.ppkBasicContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkBasicContributionEmployeeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.ppkAdditionalContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkAdditionalContributionEmployeeTaxElement"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.employerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.retirement.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.retirementEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.disability.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.disabilityEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.sickness.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.sicknessEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.accident.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.accidentEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fp.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.fpEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fgsp.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.fgspEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.fep.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.fepEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.socialContribution.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.socialContributionEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.ppkBasicContribution.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkBasicContributionEmployerTaxElement"></app-tax-element></td>
+          <td><app-tax-element [value]="taxation.ppkAdditionalContribution.employer | number: '1.2-2'" [taxElement]="taxElementsCollection.ppkAdditionalContributionEmployerTaxElement"></app-tax-element></td>
+        </tr>
+      </table>
 
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Data wystawienia: {{ currentDate | date : 'dd.MM.YYYY' }}
-        </td>
-        <td colspan="3">
-          Osoba wystawiająca: XXX
-        </td>
-      </tr>
-    </table>
-  </mat-card-content>
-</mat-card>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td colspan="2">
+      <table class="nested-table">
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionBaseElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionBaseValueElement" [value]="taxation.healthInsuranceContribution.base | number: '1.2-2'" [taxElement]="taxElementsCollection.healthInsuranceContributionBaseValueElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.incomeTaxElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.incomeTaxValueElement" [value]="taxation.incomeTax | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.healthInsuranceContributionValueElement" [value]="taxation.healthInsuranceContribution.employee | number: '1.2-2'" [taxElement]="taxElementsCollection.healthInsuranceContributionValueElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.deductibleExpensesElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.deductibleExpensesValueElement" [value]="taxation.deductibleExpenses | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.zaniechPodElement"></app-tax-element></td>
+          <td></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.middleClassTaxReliefElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.middleClassTaxReliefValueElement" [value]="taxation.middleClassTaxRelief | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.taxReliefElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.taxReliefValueElement" [value]="taxation.taxRelief | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <table class="nested-table">
+        <tr>
+          <td><app-tax-element [taxElement]="taxElementsCollection.totalNetElement"></app-tax-element></td>
+          <td><app-tax-element [taxElement]="taxElementsCollection.totalNetValueElement" [value]="taxation.totalNet | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+        <tr>
+          <td>w tym</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>GOT</td>
+          <td>{{ 0 | number: '1.2-2' }}</td>
+        </tr>
+        <tr>
+          <td>ROR</td>
+          <td><app-tax-element [value]="taxation.totalNet | number: '1.2-2'"></app-tax-element></td>
+        </tr>
+      </table>
 
-
-
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Data wystawienia: DD.MM.YYYY
+    </td>
+    <td colspan="3">
+      Osoba wystawiająca: XXX
+    </td>
+  </tr>
+</table>

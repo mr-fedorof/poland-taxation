@@ -8,26 +8,21 @@
 }
 
 .customization {
-    .section {
-      display: flex;
-      align-items: center;
-    }
+  .tab-content {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 16px;
+    min-height: 100px;
+    box-sizing: border-box;
+  }
 
   .form-control {
     margin-right: 16px;
   }
-
-  .form-control-small {
-    width: 80px;
-  }
-
-  .form-control-medium {
-    width: 160px;
-  }
 }
 
-.add-tax-additive-button {
-  margin-left: auto;
+.divider {
+  margin-bottom: 16px;
 }
 
 .payslip {

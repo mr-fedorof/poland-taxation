@@ -2,16 +2,19 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 import { SatPopoverModule } from '@ncstate/sat-popover';
-import { TaxElementExplanationDialogComponent } from './tax-element-explanation-dialog/tax-element-explanation-dialog.component';
 import { PayslipComponent } from './payslip.component';
 import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
+import {
+  TaxElementExplanationDialogComponent
+} from './tax-element-explanation-dialog/tax-element-explanation-dialog.component';
 import { TaxElementComponent } from './tax-element/tax-element.component';
 
 @NgModule({
@@ -24,7 +27,6 @@ import { TaxElementComponent } from './tax-element/tax-element.component';
   imports: [
     MatInputModule,
     MatSelectModule,
-    MatCardModule,
     MatCheckboxModule,
     CommonModule,
     FormsModule,
@@ -32,7 +34,9 @@ import { TaxElementComponent } from './tax-element/tax-element.component';
     MatButtonModule,
     MatDialogModule,
     SatPopoverModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule,
+    MatDividerModule
   ],
   exports: [
     PayslipComponent

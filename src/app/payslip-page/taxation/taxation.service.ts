@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TaxElementId } from '../payslip-page/payslip/models/tax-element-id.model';
+import { TaxElementId } from '../payslip/models/tax-element-id.model';
 
 export interface TaxationParameters {
   taxAdditives: TaxAdditiveValue[];

@@ -1,1 +1,19 @@
-<app-payslip></app-payslip>
+<div class="header">
+  <button mat-raised-button color="primary" (click)="onAddPayslip()">Add Payslips</button>
+</div>
+
+<mat-accordion multi>
+  <mat-expansion-panel *ngFor="let monthConfiguration of monthConfigurations">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Payslip / {{ months[monthConfiguration.monthIndex] }}
+      </mat-panel-title>
+
+      <mat-panel-description>
+
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <app-payslip [monthConfiguration]="monthConfiguration"></app-payslip>
+  </mat-expansion-panel>
+</mat-accordion>

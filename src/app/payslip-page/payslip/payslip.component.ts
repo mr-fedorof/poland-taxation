@@ -1,19 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import {
-  BehaviorSubject,
-  distinctUntilChanged,
-  EMPTY,
-  filter,
-  map,
-  ReplaySubject,
-  startWith,
-  switchMap,
-  tap
-} from 'rxjs';
+import { distinctUntilChanged, EMPTY, filter, map, ReplaySubject, startWith, switchMap, tap } from 'rxjs';
 import { MONTHS } from '../../../modules/date';
-import { TaxAdditiveValue, Taxation, TaxationService } from '../../taxation/taxation.service';
+import { MonthConfiguration } from '../models/month-configuration.model';
+import { TaxAdditiveValue, Taxation, TaxationService } from '../taxation/taxation.service';
 import { TaxAdditiveElement } from './models/tax-additive-element.model';
 import { TaxElementId } from './models/tax-element-id.model';
 import { TaxAdditiveElementsCollection } from './services/tax-additive-elements-collection.service';
@@ -31,7 +22,8 @@ import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
 })
 export class PayslipComponent implements OnInit {
   public readonly months: string[] = MONTHS;
-  public readonly currentDate: Date = new Date();
+
+  @Input() public monthConfiguration!: MonthConfiguration;
 
   public customizationForm!: FormGroup;
 
@@ -56,7 +48,6 @@ export class PayslipComponent implements OnInit {
     this.taxAdditives = this.taxAdditivesCollection.getAll();
 
     this.customizationForm = this.formBuilder.group({
-      month: this.formBuilder.control(0),
       tax1: this.formBuilder.control(0),
       taxThreshold12: this.formBuilder.control(30000),
       tax2: this.formBuilder.control(17),
@@ -130,7 +121,11 @@ export class PayslipComponent implements OnInit {
         this.taxationSource.next(this.taxation);
       });
 
-    this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 10000);
+    if (this.monthConfiguration.baseSalary) {
+      this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.getById(TaxElementId.BaseSalaryTaxAdditive)!, this.monthConfiguration.baseSalary);
+
+      this.customizationForm.controls['pkup'].setValue(this.monthConfiguration.baseSalary * 0.85);
+    }
   }
 
   public onAddTaxAdditive(): void {

@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainModule } from './main/main.module';
+import { PayslipPageModule } from './payslip-page/payslip-page.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { MainModule } from './main/main.module';
     BrowserModule,
     AppRoutingModule,
     NoopAnimationsModule,
-    MainModule
+    PayslipPageModule
   ],
   providers: [],
   bootstrap: [AppComponent]
