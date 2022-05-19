@@ -339,11 +339,21 @@ export class TaxElementsCollection {
     id: TaxElementId.MiddleClassTaxRelief,
     name: 'ULGA PRAC.',
     hint: 'Помощь среднему классу',
+    description: `
+      <p>Сумма “Помощи среднему классу” зависит от месячного гросс дохода:</p>
+      <p>5 701 - 8 549 PLN => (Income * 6.68% – 380.50 PLN) ÷ 17%</p>
+      <p>8 549 – 11 141 PLN => (Income * (-7.35%) + 819.08 PLN) ÷ 17%</p>
+      <p>Sick leave allowances вычитаются из “middle class relief”</p>
+    `
   }
 
   public readonly middleClassTaxReliefValueElement: TaxElement = {
     id: TaxElementId.MiddleClassTaxReliefValue,
     name: 'ULGA PRAC.',
+    formula: `
+      IF [${TaxElementId.TotalGrossValue}] IN [5701.00, 8549] => ([${TaxElementId.TotalGrossValue}] * 6.68% – 380.50) / 17%</br>
+      IF [${TaxElementId.TotalGrossValue}] IN (8 549, 11141] => ([${TaxElementId.TotalGrossValue}] * (-7.35%) + 819.08) / 17%
+    `
   }
 
   public readonly taxReliefElement: TaxElement = {
@@ -386,7 +396,7 @@ export class TaxElementsCollection {
   public readonly cumulativeTaxBaseValueElement: TaxElement = {
     id: TaxElementId.CumulativeTaxBaseValue,
     name: 'Podstawa podatku',
-    formula: `SUM FOR THE PREVIOUS MONTHS + ([${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.DeductibleExpensesValue}])`
+    formula: `SUM FOR THE PREVIOUS MONTHS + ([${TaxElementId.TotalGrossValue}] - [${TaxElementId.SocialContributionEmployee}] - [${TaxElementId.DeductibleExpensesValue}] - [${TaxElementId.MiddleClassTaxReliefValue}])`
   }
 
   public readonly retirementDisabilityCumulativeBaseElement: TaxElement = {

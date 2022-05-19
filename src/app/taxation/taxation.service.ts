@@ -165,9 +165,16 @@ export class TaxationService {
     // Gross income is in the range 5 701 - 8 549 PLN => (Income * 6.68% – 380,50 PLN) ÷ 17%
     // Gross income is in the range 8 549 – 11 141 PLN => (Income * (-7.35%) + 819,08 PLN) ÷ 17%
     // Sick leave allowances are excluded from “middle class relief”
-    const middleClassTaxRelief: number = 0;
+    let middleClassTaxRelief: number = 0;
 
-    // Tax relief that reduces income tax. Tax relief are 5100,00 PLN / year => 425,00 PLN /month
+    if (totalGross >= 5701 && totalGross <= 8549) {
+      middleClassTaxRelief += (totalGross * 0.0668 - 380.50) / 0.017;
+    }
+
+    if (totalGross > 8549 && totalGross <= 11141) {
+      middleClassTaxRelief += (819.08 - (totalGross * 0.0735)) / 0.017;
+    }
+
     let taxRelief: number = 0;
 
     if (pit2Enabled) {
