@@ -1,9 +1,7 @@
 import { Component, HostBinding, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TaxAdditive } from '../models/tax-additive.model';
 import { TaxElementId } from '../models/tax-element-id.model';
 import { TaxElement } from '../models/tax-element.model';
-import { TaxAdditivesCollection } from '../services/tax-additives-collection.service';
 import { TaxElementRegistryService } from '../services/tax-element-registry.service';
 import { TaxElementsCollection } from '../services/tax-elements-collection.service';
 import {
@@ -16,9 +14,8 @@ import {
   styleUrls: ['./tax-element.component.scss']
 })
 export class TaxElementComponent implements OnInit, OnDestroy {
-  @Input('taxElement') public taxElementParam!: TaxElement;
-  @Input('taxAdditive') public taxAdditiveParam!: TaxAdditive;
-  @Input('value') public valueParam: any;
+  @Input() public taxElement: TaxElement | null | undefined;
+  @Input() public value: any;
 
   @HostBinding('class.has-explanation') public hasExplanation: boolean = false;
   @HostBinding('class.highlight') public highlight: boolean = false;
@@ -29,7 +26,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
     }
   }
 
-  public taxElementId!: TaxElementId;
+  public taxElementId!: TaxElementId | null;
   public name!: string;
   public formula!: string;
   public hint!: string;
@@ -41,18 +38,17 @@ export class TaxElementComponent implements OnInit, OnDestroy {
   constructor(
     private readonly dialog: MatDialog,
     private readonly taxElementRegistryService: TaxElementRegistryService,
-    private readonly taxElementsCollection: TaxElementsCollection,
-    private readonly taxAdditivesCollection: TaxAdditivesCollection
+    private readonly taxElementsCollection: TaxElementsCollection
   ) {
   }
 
   public ngOnInit(): void {
-    this.taxElementId = this.getTaxElementId();
-    this.name = this.getName();
-    this.title = this.getTitle();
-    this.hint = this.getHint();
-    this.description = this.getDescription();
-    this.formula = this.getFormula();
+    this.taxElementId = this.taxElement?.id ?? null;
+    this.name = this.taxElement?.name ?? '';
+    this.title = this.taxElement?.title ?? '';
+    this.hint = this.taxElement?.hint ?? '';
+    this.description = this.taxElement?.description ?? '';
+    this.formula = this.taxElement?.formula ?? '';
     this.formulaRelatedTaxElementIds = this.getFormulaRelatedTaxElementIds(this.formula);
     this.formattedFormula = this.formatFormula(this.formula);
     this.hasExplanation = !!this.title || !!this.description;
@@ -70,13 +66,19 @@ export class TaxElementComponent implements OnInit, OnDestroy {
 
   public onAfterOpenFormulaPopover(): void {
     this.formulaRelatedTaxElementIds.forEach(taxElementId => {
-      this.taxElementRegistryService.get(taxElementId).highlight = true;
+      const taxElementComponent = this.taxElementRegistryService.get(taxElementId);
+      if (taxElementComponent) {
+        taxElementComponent.highlight = true;
+      }
     });
   }
 
   public onAfterCloseFormulaPopover(): void {
     this.formulaRelatedTaxElementIds.forEach(taxElementId => {
-      this.taxElementRegistryService.get(taxElementId).highlight = false;
+      const taxElementComponent = this.taxElementRegistryService.get(taxElementId);
+      if (taxElementComponent) {
+        taxElementComponent.highlight = false;
+      }
     });
   }
 
@@ -90,30 +92,6 @@ export class TaxElementComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getTaxElementId(): TaxElementId {
-    return this.taxElementParam?.id ?? this.taxAdditiveParam?.id;
-  }
-
-  private getName(): string {
-    return this.taxElementParam?.name ?? this.taxAdditiveParam?.name ?? '';
-  }
-
-  private getTitle(): string {
-    return this.taxElementParam?.title ?? this.taxAdditiveParam?.title ?? '';
-  }
-
-  private getDescription(): string {
-    return this.taxElementParam?.description ?? this.taxAdditiveParam?.description ?? '';
-  }
-
-  private getFormula(): string {
-    return this.taxElementParam?.formula ?? '';
-  }
-
-  private getHint(): string {
-    return this.taxElementParam?.hint ?? this.taxAdditiveParam?.hint ?? '';
-  }
-
   private getFormulaRelatedTaxElementIds(formula: string): TaxElementId[] {
     const relatedElementMatcher: RegExp = /\[(\w+)\]/ig;
     const relatedElementMatches = formula.matchAll(relatedElementMatcher);
@@ -125,7 +103,7 @@ export class TaxElementComponent implements OnInit, OnDestroy {
     const relatedElementMatcher: RegExp = /(\[(\w+)\])/ig;
 
     return formula.replaceAll(relatedElementMatcher, (m, v1, v2) => {
-      return this.taxElementsCollection.getById(v2)?.name ?? this.taxAdditivesCollection.getById(v2)?.name ?? v2;
+      return this.taxElementsCollection.getById(v2)?.name ?? v2;
     });
   }
 }

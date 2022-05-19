@@ -4,8 +4,9 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { startWith } from 'rxjs';
 import { MONTHS } from '../../../modules/date';
 import { TaxAdditiveValue, Taxation, TaxationService } from '../../taxation/taxation.service';
-import { TaxAdditive } from './models/tax-additive.model';
-import { TaxAdditivesCollection } from './services/tax-additives-collection.service';
+import { TaxAdditiveElement } from './models/tax-additive-element.model';
+import { TaxElementId } from './models/tax-element-id.model';
+import { TaxAdditiveElementsCollection } from './services/tax-additive-elements-collection.service';
 import { TaxElementRegistryService } from './services/tax-element-registry.service';
 import { TaxElementsCollection } from './services/tax-elements-collection.service';
 import { TaxAdditiveComponent } from './tax-additive/tax-additive.component';
@@ -29,19 +30,19 @@ export class PayslipComponent implements OnInit {
   }
 
   public taxation!: Taxation;
-  public taxAdditives!: TaxAdditive[];
+  public taxAdditives!: TaxAdditiveElement[];
 
   constructor(
     private readonly taxationService: TaxationService,
     private readonly formBuilder: FormBuilder,
     private readonly dialog: MatDialog,
     public readonly taxElementsCollection: TaxElementsCollection,
-    public readonly taxAdditivesCollection: TaxAdditivesCollection
+    public readonly taxAdditivesCollection: TaxAdditiveElementsCollection
   ) {
   }
 
   public ngOnInit(): void {
-    this.taxAdditives = this.taxAdditivesCollection.getVisibleTaxAdditives();
+    this.taxAdditives = this.taxAdditivesCollection.getAll();
 
     this.customizationForm = this.formBuilder.group({
       month: this.formBuilder.control(0),
@@ -57,6 +58,20 @@ export class PayslipComponent implements OnInit {
       pit2Enabled: this.formBuilder.control(true),
       taxAdditives: this.formBuilder.array([]),
     });
+
+    this.customizationForm.controls['pkup'].valueChanges
+      .pipe(startWith(this.customizationForm.value.pkup))
+      .subscribe((value: number) => {
+        const pkupEnable: boolean = Boolean(value) && value > 0;
+
+        if (pkupEnable) {
+          this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.pkupTaxAdditive, value);
+          this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.pkupReduceTaxAdditive, -value);
+        } else {
+          this.removeTaxAdditiveById(TaxElementId.PkupTaxAdditive);
+          this.removeTaxAdditiveById(TaxElementId.PkupReduceTaxAdditive);
+        }
+      });
 
     this.customizationForm.valueChanges
       .pipe(startWith(this.customizationForm.value))
@@ -76,7 +91,7 @@ export class PayslipComponent implements OnInit {
         });
       });
 
-    this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 10000);
+    this.addOrUpdateTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 10000);
   }
 
   public onAddTaxAdditive(): void {
@@ -89,7 +104,7 @@ export class PayslipComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.addTaxAdditive(result.taxAdditive, result.value);
+        this.addOrUpdateTaxAdditive(result.taxAdditive, result.value);
       }
     });
   }
@@ -102,14 +117,34 @@ export class PayslipComponent implements OnInit {
     return taxAdditives.filter(_ => _.taxable === taxable).reduce((p, c) => p + c.value, 0);
   }
 
-  private addTaxAdditive(taxAdditive: TaxAdditive, value: number): void {
-    const additivesFormGroup: FormArray = this.customizationForm.controls['taxAdditives'] as FormArray;
+  private addOrUpdateTaxAdditive(taxAdditive: TaxAdditiveElement, value: number): void {
+    const additivesFormArray: FormArray = this.customizationForm.controls['taxAdditives'] as FormArray;
+    const additives: TaxAdditiveValue[] = additivesFormArray.value;
+    const index: number = additives.findIndex(_ => _.id === taxAdditive.id);
 
-    additivesFormGroup.push(this.formBuilder.control({
-      id: taxAdditive.id,
-      taxable: taxAdditive.taxable,
-      value: +value
-    }));
+    if (index < 0) {
+      additivesFormArray.push(this.formBuilder.control({
+        id: taxAdditive.id,
+        taxable: taxAdditive.taxable,
+        value: +value
+      }));
+    } else {
+      additivesFormArray.at(index).setValue({
+        id: taxAdditive.id,
+        taxable: taxAdditive.taxable,
+        value: +value
+      });
+    }
+  }
+
+  private removeTaxAdditiveById(id: TaxElementId): void {
+    const additivesFormArray: FormArray = this.customizationForm.controls['taxAdditives'] as FormArray;
+    const additives: TaxAdditiveValue[] = additivesFormArray.value;
+    const index: number = additives.findIndex(_ => _.id === id);
+
+    if (index >= 0) {
+      additivesFormArray.removeAt(index);
+    }
   }
 
   private removeTaxAdditive(index: number): void {

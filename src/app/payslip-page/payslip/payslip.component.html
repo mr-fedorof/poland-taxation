@@ -141,49 +141,29 @@
                 <button mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
                   <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
                 </button>
-                <strong><app-tax-element [taxAdditive]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>
+                <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>
               </td>
             </tr>
-            <ng-container *ngIf="customizationForm.controls['pkup'].value">
-              <tr>
-                <td>
-                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupTaxAdditive"></app-tax-element></strong>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupReduceTaxAdditive"></app-tax-element></strong>
-                </td>
-              </tr>
-            </ng-container>
           </table>
         </td>
         <td>
           <table class="nested-table">
             <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
               <td>
-                <strong [class.hidden]="!taxAdditive.taxable"><app-tax-element [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element></strong>
+                <strong [class.hidden]="!taxAdditive.taxable">
+                  <app-tax-element [taxElement]="taxElementsCollection.getTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
+                </strong>
               </td>
             </tr>
-            <ng-container *ngIf="customizationForm.controls['pkup'].value as pkupValue">
-              <tr>
-                <td>
-                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupValueTaxAdditive" [value]="pkupValue | number: '1.2-2'"></app-tax-element></strong>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <strong><app-tax-element [taxElement]="taxAdditivesCollection.pkupReduceValueTaxAdditive" [value]="-pkupValue | number: '1.2-2'"></app-tax-element></strong>
-                </td>
-              </tr>
-            </ng-container>
           </table>
         </td>
         <td>
           <table class="nested-table">
             <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
               <td>
-                <strong [class.hidden]="taxAdditive.taxable"><app-tax-element [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element></strong>
+                <strong [class.hidden]="taxAdditive.taxable">
+                  <app-tax-element [taxElement]="taxElementsCollection.getNonTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
+                </strong>
               </td>
             </tr>
           </table>

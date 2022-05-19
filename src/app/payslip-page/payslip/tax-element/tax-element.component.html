@@ -1,8 +1,8 @@
 
-<ng-container *ngIf="valueParam; else defaultView">
-  <span *ngIf="!formula && !hint">{{ valueParam }}</span>
-  <span *ngIf="!formula && hint" [satPopoverAnchor]="popoverHint" satPopoverHover>{{ valueParam }}</span>
-  <span *ngIf="formula" [satPopoverAnchor]="popoverFormula" satPopoverHover>{{ valueParam }}</span>
+<ng-container *ngIf="value; else defaultView">
+  <span *ngIf="!formula && !hint">{{ value }}</span>
+  <span *ngIf="!formula && hint" [satPopoverAnchor]="popoverHint" satPopoverHover>{{ value }}</span>
+  <span *ngIf="formula" [satPopoverAnchor]="popoverFormula" satPopoverHover>{{ value }}</span>
 </ng-container>
 
 <ng-template #defaultView>

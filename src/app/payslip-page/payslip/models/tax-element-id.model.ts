@@ -86,6 +86,7 @@ export enum TaxElementId {
   PkupValueTaxAdditive = 'PkupValueTaxAdditive',
   PkupReduceTaxAdditive = 'PkupReduceTaxAdditive',
   PkupReduceValueTaxAdditive = 'PkupReduceValueTaxAdditive',
+
   BaseSalaryTaxAdditive = 'BaseSalaryTaxAdditive',
   SickPayTaxAdditive = 'SickPayTaxAdditive',
   SickAllowance1TaxAdditive = 'SickAllowance1TaxAdditive',

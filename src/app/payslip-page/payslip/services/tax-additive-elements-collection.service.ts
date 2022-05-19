@@ -1,54 +1,55 @@
 import { Injectable } from '@angular/core';
-import { TaxAdditive } from '../models/tax-additive.model';
+import { TaxAdditiveElement } from '../models/tax-additive-element.model';
 import { TaxElementId } from '../models/tax-element-id.model';
-import { TaxElement } from '../models/tax-element.model';
-
-interface DisplaySettings {
-  skip?: boolean;
-}
 
 @Injectable({
   providedIn: 'root'
 })
-export class TaxAdditivesCollection {
-  public readonly baseSalaryTaxAdditive: TaxAdditive & DisplaySettings = {
+export class TaxAdditiveElementsCollection {
+  public readonly baseSalaryTaxAdditive: TaxAdditiveElement = {
     id: TaxElementId.BaseSalaryTaxAdditive,
     name: 'wynagr.zasad./m',
     taxable: true,
     hint: 'Зарплата с вычетами нерабочих дней',
   };
 
-  public readonly bonusTaxAdditive: TaxAdditive & DisplaySettings = {
+  public readonly bonusTaxAdditive: TaxAdditiveElement = {
     id: TaxElementId.BonusTaxAdditive,
     name: 'Bonus',
     taxable: true,
     hint: 'Бонус',
   };
 
-  public readonly pkupTaxAdditive: TaxElement & DisplaySettings = {
+  public readonly pkupTaxAdditive: TaxAdditiveElement = {
     id: TaxElementId.PkupTaxAdditive,
-    hint: 'PKUP',
     name: 'Honorarium_PKUP',
-    skip: true,
+    taxable: true,
+    taxableValueId: TaxElementId.PkupValueTaxAdditive,
+    hint: 'PKUP',
+    system: true,
   }
 
-  public readonly pkupValueTaxAdditive: TaxElement & DisplaySettings = {
+  public readonly pkupValueTaxAdditive: TaxAdditiveElement = {
     id: TaxElementId.PkupValueTaxAdditive,
     name: 'Honorarium_PKUP',
-    skip: true,
+    taxable: true,
+    system: true,
   }
 
-  public readonly pkupReduceTaxAdditive: TaxElement & DisplaySettings = {
+  public readonly pkupReduceTaxAdditive: TaxAdditiveElement = {
     id: TaxElementId.PkupReduceTaxAdditive,
     name: 'Honorarium_pomniejszenie',
+    taxable: true,
+    taxableValueId: TaxElementId.PkupReduceValueTaxAdditive,
     hint: 'PKUP не облагается налогом, поэтому его вычитают',
-    skip: true,
+    system: true,
   }
 
-  public readonly pkupReduceValueTaxAdditive: TaxElement & DisplaySettings = {
+  public readonly pkupReduceValueTaxAdditive: TaxAdditiveElement = {
     id: TaxElementId.PkupReduceValueTaxAdditive,
     name: 'Honorarium_pomniejszenie',
-    skip: true,
+    taxable: true,
+    system: true,
   }
 
   // public readonly sickPayTaxAdditive: TaxAdditive = {
@@ -275,22 +276,20 @@ export class TaxAdditivesCollection {
   //   taxable: false
   // };
 
-  private readonly _all: TaxAdditive[] = Object.values(this)
+  private readonly _all: TaxAdditiveElement[] = Object.values(this)
     .filter(_ => !!_.id && !!TaxElementId[_.id as TaxElementId]);
-  private readonly _allVisible: TaxAdditive[] = this._all
-    .filter(_ => !(_ as any as DisplaySettings).skip);
-  private readonly _mapById: Map<TaxElementId, TaxAdditive> = new Map(this._all.map(_ => ([_.id, _])));
-  private readonly _mapByName: Map<string, TaxAdditive> = new Map(this._all.map(_ => ([_.name, _])));
+  private readonly _mapById: Map<TaxElementId, TaxAdditiveElement> = new Map(this._all.map(_ => ([_.id, _])));
+  private readonly _mapByName: Map<string, TaxAdditiveElement> = new Map(this._all.map(_ => ([_.name, _])));
 
-  public getVisibleTaxAdditives(): TaxAdditive[] {
-    return [...this._allVisible];
+  public getAll(includeSystem: boolean = false): TaxAdditiveElement[] {
+    return [...this._all].filter(_ => !_.system || includeSystem);
   }
 
-  public getById(id: TaxElementId): TaxAdditive {
-    return this._mapById.get(id)!;
+  public getById(id: TaxElementId): TaxAdditiveElement | null {
+    return this._mapById.get(id) ?? null;
   }
 
-  public getByName(name: string): TaxAdditive {
+  public getByName(name: string): TaxAdditiveElement {
     return this._mapByName.get(name)!;
   }
 }

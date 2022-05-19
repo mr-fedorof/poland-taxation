@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
 import { TaxElementId } from '../models/tax-element-id.model';
 import { TaxElement } from '../models/tax-element.model';
+import { TaxAdditiveElementsCollection } from './tax-additive-elements-collection.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaxElementsCollection {
+  private readonly _all: TaxElement[];
+  private readonly _map: Map<TaxElementId, TaxElement>;
+
+  constructor(private readonly taxAdditiveElementsCollection: TaxAdditiveElementsCollection) {
+    this._all = Object.values(this)
+      .filter(_ => !!_.id && !!TaxElementId[_.id as TaxElementId])
+      .concat(...taxAdditiveElementsCollection.getAll(true));
+    this._map = new Map(this._all.map(_ => ([_.id, _])));
+  }
+
   public readonly withTaxTaxElement: TaxElement = {
     id: TaxElementId.WithTax,
     name: 'OPODATKOWANE',
@@ -433,10 +444,33 @@ export class TaxElementsCollection {
     `
   }
 
-  private readonly _all: TaxElement[] = Object.values(this).filter(_ => !!_.id && !!TaxElementId[_.id as TaxElementId]);
-  private readonly _map: Map<TaxElementId, TaxElement> = new Map(this._all.map(_ => ([_.id, _])));
+  public getById(id: TaxElementId): TaxElement | null {
+    return this._map.get(id) ?? null;
+  }
 
-  public getById(id: TaxElementId): TaxElement {
-    return this._map.get(id)!;
+  public getTaxableValueId(id: TaxElementId): TaxElement | null {
+    const taxAdditiveElement = this.taxAdditiveElementsCollection.getById(id);
+    if (!taxAdditiveElement) {
+      return null;
+    }
+
+    if (!taxAdditiveElement.taxableValueId) {
+      return null;
+    }
+
+    return this.getById(taxAdditiveElement.taxableValueId);
+  }
+
+  public getNonTaxableValueId(id: TaxElementId): TaxElement | null {
+    const taxAdditiveElement = this.taxAdditiveElementsCollection.getById(id);
+    if (!taxAdditiveElement) {
+      return null;
+    }
+
+    if (!taxAdditiveElement.nonTaxableValueId) {
+      return null;
+    }
+
+    return this.getById(taxAdditiveElement.nonTaxableValueId);
   }
 }

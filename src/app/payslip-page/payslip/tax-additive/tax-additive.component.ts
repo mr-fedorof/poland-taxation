@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { TaxAdditive } from '../models/tax-additive.model';
+import { TaxAdditiveElement } from '../models/tax-additive-element.model';
 
 @Component({
   selector: 'app-tax-additive',
@@ -8,12 +8,12 @@ import { TaxAdditive } from '../models/tax-additive.model';
   styleUrls: ['./tax-additive.component.scss']
 })
 export class TaxAdditiveComponent {
-  public taxAdditives: TaxAdditive[] = [];
-  public taxAdditive: TaxAdditive | null = null;
+  public taxAdditives: TaxAdditiveElement[] = [];
+  public taxAdditive: TaxAdditiveElement | null = null;
   public taxAdditiveValue: number | null = null;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private readonly data: { taxAdditives: TaxAdditive[] },
+    @Inject(MAT_DIALOG_DATA) private readonly data: { taxAdditives: TaxAdditiveElement[] },
     private readonly dialogRef: MatDialogRef<TaxAdditiveComponent>
   ) {
     this.taxAdditives = data.taxAdditives;
