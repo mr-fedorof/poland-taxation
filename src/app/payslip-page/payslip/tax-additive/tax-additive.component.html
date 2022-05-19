@@ -5,7 +5,7 @@
     <mat-label>Tax Additive</mat-label>
     <mat-select [required]="true" [(ngModel)]="taxAdditive" #taxAdditiveControl>
       <mat-option *ngFor="let taxAdditive of taxAdditives" [value]="taxAdditive">
-        {{ taxAdditive.name }} - {{ taxAdditive.taxable ? 'Tax' : 'Non-Tax' }}
+        {{ taxAdditive.name }} - {{ taxAdditive.taxable ? 'Taxable' : 'Non-Taxable' }}
       </mat-option>
     </mat-select>
   </mat-form-field>

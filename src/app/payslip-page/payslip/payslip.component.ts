@@ -45,6 +45,12 @@ export class PayslipComponent implements OnInit {
 
     this.customizationForm = this.formBuilder.group({
       month: this.formBuilder.control(0),
+      tax1: this.formBuilder.control(0),
+      taxThreshold12: this.formBuilder.control(30000),
+      tax2: this.formBuilder.control(17),
+      taxThreshold23: this.formBuilder.control(120000),
+      tax3: this.formBuilder.control(32),
+      retirementDisabilityBaseThreshold: this.formBuilder.control(177660),
       pkup: this.formBuilder.control(0),
       liveOutside: this.formBuilder.control(false),
       ppkEnabled: this.formBuilder.control(false),
@@ -60,9 +66,21 @@ export class PayslipComponent implements OnInit {
           pkup: +value.pkup,
           ppkEnabled: value.ppkEnabled,
           liveOutside: value.liveOutside,
-          pit2Enabled: value.pit2Enabled
+          pit2Enabled: value.pit2Enabled,
+          tax1: value.tax1,
+          taxThreshold12: value.taxThreshold12,
+          tax2: value.tax2,
+          taxThreshold23: value.taxThreshold23,
+          tax3: value.tax3,
+          retirementDisabilityBaseThreshold: value.retirementDisabilityBaseThreshold
         });
       });
+
+    // this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 11550);
+    // this.addTaxAdditive(this.taxAdditivesCollection.getByName('Bonus')!, 6833.28);
+    // this.customizationForm.controls['pkup'].setValue(3501);
+
+    this.addTaxAdditive(this.taxAdditivesCollection.getByName('wynagr.zasad./m')!, 31000);
   }
 
   public onAddTaxAdditive(): void {

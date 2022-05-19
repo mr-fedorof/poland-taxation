@@ -3,18 +3,58 @@
 
   <mat-card-content>
     <div [formGroup]="customizationForm"  class="customization">
-      <mat-form-field class="form-control" appearance="fill">
-        <mat-label>PKUP</mat-label>
-        <input matInput type="number" formControlName="pkup">
-      </mat-form-field>
+      <section class="section">
+        <mat-form-field class="form-control form-control-small" appearance="fill">
+          <mat-label>Tax 1</mat-label>
+          <input matInput type="number" formControlName="tax1">
+        </mat-form-field>
 
-      <mat-checkbox class="form-control" formControlName="ppkEnabled">PPK</mat-checkbox>
+        <mat-form-field class="form-control form-control-medium" appearance="fill">
+          <mat-label>Tax Threshold</mat-label>
+          <input matInput type="number" formControlName="taxThreshold12">
+        </mat-form-field>
 
-      <mat-checkbox class="form-control" formControlName="liveOutside">Live Outside</mat-checkbox>
+        <mat-form-field class="form-control form-control-small" appearance="fill">
+          <mat-label>Tax 2</mat-label>
+          <input matInput type="number" formControlName="tax2">
+        </mat-form-field>
 
-      <mat-checkbox class="form-control" formControlName="pit2Enabled">PIT-2</mat-checkbox>
+        <mat-form-field class="form-control form-control-medium" appearance="fill">
+          <mat-label>Tax Threshold</mat-label>
+          <input matInput type="number" formControlName="taxThreshold23">
+        </mat-form-field>
 
-      <button mat-button color="primary" (click)="onAddTaxAdditive()" class="add-tax-additive-button">Add Tax Additive</button>
+        <mat-form-field class="form-control form-control-small" appearance="fill">
+          <mat-label>Tax 3</mat-label>
+          <input matInput type="number" formControlName="tax3">
+        </mat-form-field>
+
+        <mat-form-field class="form-control form-control-medium" appearance="fill">
+          <mat-label>Retirement & Disability Base Threshold</mat-label>
+          <input matInput type="number" formControlName="retirementDisabilityBaseThreshold">
+        </mat-form-field>
+      </section>
+
+      <section class="section">
+        <mat-form-field class="form-control form-control-medium" appearance="fill">
+          <mat-label>PKUP</mat-label>
+          <input matInput type="number" formControlName="pkup">
+        </mat-form-field>
+
+        <div class="form-control">
+          <mat-checkbox formControlName="ppkEnabled">PPK</mat-checkbox>
+        </div>
+
+        <div class="form-control">
+          <mat-checkbox formControlName="liveOutside">Live Outside</mat-checkbox>
+        </div>
+
+        <div class="form-control">
+          <mat-checkbox formControlName="pit2Enabled">PIT-2</mat-checkbox>
+        </div>
+
+        <button mat-button color="primary" (click)="onAddTaxAdditive()" class="add-tax-additive-button">Add Tax Additive</button>
+      </section>
     </div>
 
     <table class="payslip">

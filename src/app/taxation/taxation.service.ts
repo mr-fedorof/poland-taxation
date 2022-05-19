@@ -6,6 +6,12 @@ export interface TaxationParameters {
   ppkEnabled: boolean;
   liveOutside: boolean;
   pit2Enabled: boolean;
+  tax1: number;
+  tax2: number;
+  tax3: number;
+  taxThreshold12: number;
+  taxThreshold23: number;
+  retirementDisabilityBaseThreshold: number;
 }
 
 export interface TaxAdditiveValue {
@@ -55,6 +61,12 @@ export class TaxationService {
     const pkup: number = taxationParameters.pkup;
     const liveOutside: boolean = taxationParameters.liveOutside;
     const pit2Enabled: boolean = taxationParameters.pit2Enabled;
+    const tax1: number = taxationParameters.tax1;
+    const taxThreshold12: number = taxationParameters.taxThreshold12;
+    const tax2: number = taxationParameters.tax2;
+    const taxThreshold23: number = taxationParameters.taxThreshold23;
+    const tax3: number = taxationParameters.tax3;
+    const retirementDisabilityBaseThreshold: number = taxationParameters.retirementDisabilityBaseThreshold;
 
     const socialContributionBase: number = totalGross;
     // Substruct
@@ -164,10 +176,41 @@ export class TaxationService {
 
     // Income tax paid to the Tax Office and deducted from gross pay
     // Taxable elements - Sum of employee’s social contributions – KOSZTY – ULGA PRAC. = Tax base (rounded to full PLN)
-    const taxBase: number = Math.max(Math.round(totalGross - socialContribution.employee - deductibleExpenses - middleClassTaxRelief), 0);
+    const taxBase: number = Math.max(totalGross - socialContribution.employee - deductibleExpenses - middleClassTaxRelief, 0);
+    const taxBaseRound: number = Math.round(taxBase);
+
+    const cumulativeTaxBase: number = taxBase;
+    const cumulativeTaxBaseRound: number = Math.round(cumulativeTaxBase);
+    const cumulativeRetirementDisabilityBase: number = socialContributionBase;
 
     // Procent podatku (tax %) -17% or 32% (or 17% / 32% in the month when the threshold of 120 000 PLN is reached)
-    const incomeTax: number = Math.max(Math.round((taxBase * 0.17) - taxRelief), 0);
+    const incomeTax1: number = (function(){
+      let t = Math.min(cumulativeTaxBaseRound, taxThreshold12);
+
+      return Math.round(t * tax1 / 100);
+    })();
+
+    const incomeTax2: number = (function(){
+      let t = cumulativeTaxBaseRound - taxThreshold12;
+      if (t < 0) {
+        return 0;
+      }
+
+      t = Math.min(t, taxThreshold23);
+
+      return Math.round(t * tax2 / 100);
+    })();
+
+    const incomeTax3: number = (function(){
+      let t = cumulativeTaxBaseRound - taxThreshold23;
+      if (t < 0) {
+        return 0;
+      }
+
+      return Math.round(t * tax3 / 100);
+    })();
+
+    const incomeTax: number = Math.max(incomeTax1 + incomeTax2 + incomeTax3 - taxRelief, 0);
 
     // RAZEM / ROR  = SUMA - Pakiet (MyBenefit) - RAZEM SKŁ. ZUS  {UBEZPIECZ. Line} - ZDROW. - ZAL. POD - PPK P {UBEZPIECZ. + PŁATNIK lines}
     const totalNet: number = totalGross - this.sum(
@@ -177,9 +220,6 @@ export class TaxationService {
       ppkBasicContribution.employee,
       ppkBasicContribution.employer
     );
-
-    const cumulativeTaxBase: number = Math.max(totalGross - socialContribution.employee - deductibleExpenses, 0);
-    const cumulativeRetirementDisabilityBase: number = socialContributionBase;
 
     return {
       retirement: retirement,

@@ -8,11 +8,21 @@
 }
 
 .customization {
-  display: flex;
-  align-items: center;
+    .section {
+      display: flex;
+      align-items: center;
+    }
 
   .form-control {
     margin-right: 16px;
+  }
+
+  .form-control-small {
+    width: 80px;
+  }
+
+  .form-control-medium {
+    width: 160px;
   }
 }
 
