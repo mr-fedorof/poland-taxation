@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TaxElementId } from '../models/tax-element-id.model';
+import { TaxElementId } from '../../taxation/tax-element-id.model';
 import { TaxElementComponent } from '../tax-element/tax-element.component';
 
 @Injectable()

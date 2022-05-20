@@ -1,53 +1,11 @@
 import { Injectable } from '@angular/core';
-import { TaxElementId } from '../payslip/models/tax-element-id.model';
-
-export interface TaxationParameters {
-  taxAdditives: TaxAdditiveValue[];
-  pkup: number;
-  ppkEnabled: boolean;
-  liveOutside: boolean;
-  pit2Enabled: boolean;
-  tax1: number;
-  tax2: number;
-  tax3: number;
-  taxThreshold12: number;
-  taxThreshold23: number;
-  retirementDisabilityBaseThreshold: number;
-}
-
-export interface TaxAdditiveValue {
-  id: TaxElementId;
-  taxable: boolean;
-  value: number;
-}
-
-export interface Taxation {
-  retirement: DistributeTax;
-  disability: DistributeTax;
-  sickness: DistributeTax;
-  accident: DistributeTax;
-  fp: DistributeTax;
-  fgsp: DistributeTax;
-  fep: DistributeTax;
-  socialContribution: DistributeTax;
-  ppkBasicContribution: DistributeTax;
-  ppkAdditionalContribution: DistributeTax;
-  healthInsuranceContribution: DistributeTax;
-  cumulativeTaxBase: number;
-  cumulativeRetirementDisabilityBase: number;
-  incomeTax: number;
-  deductibleExpenses: number;
-  middleClassTaxRelief: number;
-  taxRelief: number;
-  socialContributionBase: number;
-  totalNet: number;
-}
-
-export interface DistributeTax {
-  base: number | null;
-  employer: number;
-  employee: number;
-}
+import { TaxAdditiveElementsCollection } from '../payslip/services/tax-additive-elements-collection.service';
+import { TaxElementsCollection } from '../payslip/services/tax-elements-collection.service';
+import { DistributeTax } from './distribute-tax.model';
+import { TaxAdditiveValue } from './tax-additive-value.model';
+import { TaxElementId } from './tax-element-id.model';
+import { TaxationParameters } from './taxation-parameters.model';
+import { Taxation } from './taxation.model';
 
 // TODO: apply cumulativeRetirementDisabilityBase
 // TODO: apply PKUP max
@@ -58,12 +16,25 @@ export interface DistributeTax {
   providedIn: 'root'
 })
 export class TaxationService {
-  public calculate(taxationParameters: TaxationParameters): Taxation {
-    const ppkEnabled: boolean = taxationParameters.ppkEnabled;
-    const totalGross: number = taxationParameters.taxAdditives
-      .filter(_ => _.taxable)
+  constructor(private readonly taxAdditiveElementsCollection: TaxAdditiveElementsCollection) {
+  }
+
+  public getPpkIncome(taxAdditiveValues: TaxAdditiveValue[]): number {
+    const totalGross: number = taxAdditiveValues
+      .filter(_ => this.taxAdditiveElementsCollection.getById(_.id)?.taxable)
       .map(_ => _.value)
       .reduce((p, c) => p + c, 0);
+
+    const socialContributionBase: number = totalGross - this.sum(
+      this.getTaxAdditiveValue(TaxElementId.PpkIncomeTaxAdditive, taxAdditiveValues)
+    );
+
+    return socialContributionBase * 0.015;
+  }
+
+  public calculate(taxationParameters: TaxationParameters): Taxation {
+    const taxAdditiveValues: TaxAdditiveValue[] = taxationParameters.taxAdditiveValues;
+    const ppkEnabled: boolean = taxationParameters.ppkEnabled;
     const pkup: number = taxationParameters.pkup;
     const liveOutside: boolean = taxationParameters.liveOutside;
     const pit2Enabled: boolean = taxationParameters.pit2Enabled;
@@ -73,8 +44,14 @@ export class TaxationService {
     const taxThreshold23: number = taxationParameters.taxThreshold23;
     const tax3: number = taxationParameters.tax3;
     const retirementDisabilityBaseThreshold: number = taxationParameters.retirementDisabilityBaseThreshold;
+    const totalGross: number = taxAdditiveValues
+      .filter(_ => this.taxAdditiveElementsCollection.getById(_.id)?.taxable)
+      .map(_ => _.value)
+      .reduce((p, c) => p + c, 0);
 
-    const socialContributionBase: number = totalGross;
+    const socialContributionBase: number = totalGross - this.sum(
+      this.getTaxAdditiveValue(TaxElementId.PpkIncomeTaxAdditive, taxAdditiveValues)
+    );
     // Substruct
     // Sick pay - wynagr.chorobowe
     // Sick allowance - zasiłek chorobowy
@@ -82,15 +59,21 @@ export class TaxationService {
     // Maternity / paternity / parental allowance - zas.macierzyński
     // PPK income - Przychód z tytułu PPK/E
 
+    const cumulativeRetirementDisabilityBase: number = taxationParameters.cumulativeRetirementDisabilityBase + socialContributionBase;
+
+    const retirementBase: number = cumulativeRetirementDisabilityBase > taxationParameters.retirementDisabilityBaseThreshold
+      ? taxationParameters.retirementDisabilityBaseThreshold - taxationParameters.cumulativeRetirementDisabilityBase
+      : socialContributionBase;
+
     const retirement: DistributeTax = {
-      base: socialContributionBase,
-      employee: socialContributionBase * 0.0976,
-      employer: socialContributionBase * 0.0976
+      base: retirementBase,
+      employee: retirementBase * 0.0976,
+      employer: retirementBase * 0.0976
     };
     const disability: DistributeTax = {
-      base: socialContributionBase,
-      employee: socialContributionBase * 0.015,
-      employer: socialContributionBase * 0.065
+      base: retirementBase,
+      employee: retirementBase * 0.015,
+      employer: retirementBase * 0.065
     };
     const sickness: DistributeTax = {
       base: socialContributionBase,
@@ -190,37 +173,28 @@ export class TaxationService {
     // Income tax paid to the Tax Office and deducted from gross pay
     // Taxable elements - Sum of employee’s social contributions – KOSZTY – ULGA PRAC. = Tax base (rounded to full PLN)
     const taxBase: number = Math.max(totalGross - socialContribution.employee - deductibleExpenses - middleClassTaxRelief, 0);
-    const taxBaseRound: number = Math.round(taxBase);
-
-    const cumulativeTaxBase: number = taxBase;
+    const cumulativeTaxBase: number = taxationParameters.cumulativeTaxBase + taxBase;
     const cumulativeTaxBaseRound: number = Math.round(cumulativeTaxBase);
-    const cumulativeRetirementDisabilityBase: number = socialContributionBase;
 
     // Procent podatku (tax %) -17% or 32% (or 17% / 32% in the month when the threshold of 120 000 PLN is reached)
     const incomeTax1: number = (function(){
-      let t = Math.min(cumulativeTaxBaseRound, taxThreshold12);
-
-      return Math.round(t * tax1 / 100);
+      return 0;
     })();
 
     const incomeTax2: number = (function(){
-      let t = cumulativeTaxBaseRound - taxThreshold12;
-      if (t < 0) {
-        return 0;
-      }
+      const tax: number = cumulativeTaxBaseRound > taxThreshold12
+        ? Math.max(Math.min(taxThreshold23, cumulativeTaxBaseRound) - Math.max(taxationParameters.cumulativeTaxBase, taxThreshold12), 0)
+        : 0;
 
-      t = Math.min(t, taxThreshold23);
-
-      return Math.round(t * tax2 / 100);
+      return Math.round(tax * tax2 / 100);
     })();
 
     const incomeTax3: number = (function(){
-      let t = cumulativeTaxBaseRound - taxThreshold23;
-      if (t < 0) {
-        return 0;
-      }
+      const tax: number = cumulativeTaxBaseRound > taxThreshold23
+        ? cumulativeTaxBaseRound - Math.max(taxationParameters.cumulativeTaxBase, taxThreshold23)
+        : 0;
 
-      return Math.round(t * tax3 / 100);
+      return Math.round(tax * tax3 / 100);
     })();
 
     const incomeTax: number = Math.max(incomeTax1 + incomeTax2 + incomeTax3 - taxRelief, 0);
@@ -249,7 +223,7 @@ export class TaxationService {
       ppkAdditionalContribution: ppkAdditionalContribution,
       healthInsuranceContribution: healthInsuranceContribution,
       cumulativeTaxBase: cumulativeTaxBase,
-      cumulativeRetirementDisabilityBase: cumulativeRetirementDisabilityBase,
+      cumulativeRetirementDisabilityBase: Math.min(cumulativeRetirementDisabilityBase, taxationParameters.retirementDisabilityBaseThreshold),
       incomeTax: incomeTax,
       deductibleExpenses: deductibleExpenses,
       middleClassTaxRelief: middleClassTaxRelief,
@@ -265,5 +239,9 @@ export class TaxationService {
     args.forEach(v => r += v);
 
     return r;
+  }
+
+  private getTaxAdditiveValue(taxElementId: TaxElementId, taxAdditiveValues: TaxAdditiveValue[]): number {
+    return taxAdditiveValues.find(_ => _.id === taxElementId)?.value ?? 0;
   }
 }

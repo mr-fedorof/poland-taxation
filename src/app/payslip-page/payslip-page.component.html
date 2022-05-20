@@ -2,11 +2,11 @@
   <button mat-raised-button color="primary" (click)="onAddPayslip()">Add Payslips</button>
 </div>
 
-<mat-accordion multi>
-  <mat-expansion-panel *ngFor="let monthConfiguration of monthConfigurations">
+<mat-accordion class="payslips" multi>
+  <mat-expansion-panel *ngFor="let month of months; trackBy: trackBy">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Payslip / {{ months[monthConfiguration.monthIndex] }}
+        {{ month.name }} / NET {{ month.taxation.totalNet | number: '1.2-2' }} / CUM TAX {{ month.taxation.cumulativeTaxBase | number: '1.2-2' }} / CUM RD {{ month.taxation.cumulativeRetirementDisabilityBase | number: '1.2-2' }}
       </mat-panel-title>
 
       <mat-panel-description>
@@ -14,6 +14,26 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <app-payslip [monthConfiguration]="monthConfiguration"></app-payslip>
+    <app-tax-parameters
+      [baseTaxParameters]="month.taxParameters"
+      [pkupEnabled]="true"
+      [retirementDisabilityBaseThresholdEnabled]="true"
+      (taxParametersChange)="onTaxParametersChange(month, $event)"
+    ></app-tax-parameters>
+
+    <app-payslip
+      [payslipParameters]="month.payslipParameters"
+      [taxAdditiveValues]="month.taxAdditiveValues"
+      [taxation]="month.taxation"
+      (taxAdditiveAdd)="onAddTaxAdditiveValue(month)"
+      (taxAdditiveRemove)="onRemoveTaxAdditiveValue(month, $event)"
+      (taxAdditiveEdit)="onEditTaxAdditiveValue(month, $event)"
+    ></app-payslip>
   </mat-expansion-panel>
 </mat-accordion>
+
+<mat-divider class="divider"></mat-divider>
+
+<p>
+  SUM NET: {{ sumNet | number: '1.2-2' }} / AVG NET: {{ avgNet | number: '1.2-2' }}
+</p>

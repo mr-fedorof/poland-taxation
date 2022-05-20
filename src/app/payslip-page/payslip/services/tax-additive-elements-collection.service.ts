@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TaxAdditiveElement } from '../models/tax-additive-element.model';
-import { TaxElementId } from '../models/tax-element-id.model';
+import { TaxElementId } from '../../taxation/tax-element-id.model';
 
 @Injectable({
   providedIn: 'root'

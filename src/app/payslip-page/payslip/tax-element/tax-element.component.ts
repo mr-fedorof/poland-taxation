@@ -1,6 +1,6 @@
 import { Component, HostBinding, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { TaxElementId } from '../models/tax-element-id.model';
+import { TaxElementId } from '../../taxation/tax-element-id.model';
 import { TaxElement } from '../models/tax-element.model';
 import { TaxElementRegistryService } from '../services/tax-element-registry.service';
 import { TaxElementsCollection } from '../services/tax-elements-collection.service';

@@ -3,6 +3,20 @@
   justify-content: flex-end;
 }
 
-.form-control {
-  width: 100%;
+.name-salary-group {
+  display: flex;
+
+  .form-control {
+    flex-grow: 1;
+
+    margin: 0 8px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
 }

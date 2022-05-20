@@ -1,67 +1,3 @@
-<div [formGroup]="customizationForm" class="customization">
-  <mat-tab-group>
-    <mat-tab label="Tax Limits">
-      <section class="tab-content">
-        <mat-form-field class="form-control tax" appearance="fill">
-          <mat-label>Tax 1</mat-label>
-          <input matInput type="number" formControlName="tax1">
-        </mat-form-field>
-
-        <mat-form-field class="form-control tax-threshold" appearance="fill">
-          <mat-label>Tax Threshold</mat-label>
-          <input matInput type="number" formControlName="taxThreshold12">
-        </mat-form-field>
-
-        <mat-form-field class="form-control tax" appearance="fill">
-          <mat-label>Tax 2</mat-label>
-          <input matInput type="number" formControlName="tax2">
-        </mat-form-field>
-
-        <mat-form-field class="form-control tax-threshold" appearance="fill">
-          <mat-label>Tax Threshold</mat-label>
-          <input matInput type="number" formControlName="taxThreshold23">
-        </mat-form-field>
-
-        <mat-form-field class="form-control tax" appearance="fill">
-          <mat-label>Tax 3</mat-label>
-          <input matInput type="number" formControlName="tax3">
-        </mat-form-field>
-      </section>
-    </mat-tab>
-
-    <mat-tab label="PKUP">
-      <section class="tab-content">
-        <mat-form-field class="form-control" appearance="fill">
-          <mat-label>PKUP</mat-label>
-          <input matInput type="number" formControlName="pkup">
-        </mat-form-field>
-      </section>
-    </mat-tab>
-
-    <mat-tab label="PPK">
-      <section class="tab-content">
-        <div class="form-control">
-          <mat-checkbox formControlName="ppkEnabled">PPK</mat-checkbox>
-        </div>
-      </section>
-    </mat-tab>
-
-    <mat-tab label="Other">
-      <section class="tab-content">
-        <div class="form-control">
-          <mat-checkbox formControlName="liveOutside">Live Outside</mat-checkbox>
-        </div>
-
-        <div class="form-control">
-          <mat-checkbox formControlName="pit2Enabled">PIT-2</mat-checkbox>
-        </div>
-      </section>
-    </mat-tab>
-  </mat-tab-group>
-</div>
-
-<mat-divider class="divider"></mat-divider>
-
 <table class="payslip">
   <tr>
     <td colspan="3">Pracownik: <strong>John Wick</strong></td>
@@ -73,7 +9,7 @@
       <table class="nested-table left-right-alignment">
         <tr>
           <td>Za okres:</td>
-          <td>{{ months[monthConfiguration.monthIndex] }}</td>
+          <td>{{ months[payslipParameters.monthIndex] }}</td>
         </tr>
         <tr>
           <td>PESEL:</td>
@@ -141,22 +77,48 @@
   <tr>
     <td>
       <table class="nested-table">
-        <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value; index as i">
+        <tr *ngFor="let taxAdditiveValue of taxAdditiveValues; index as i">
           <td>
-            <button *ngIf="!taxAdditivesCollection.getById(taxAdditive.id)?.system" mat-icon-button class="tax-additive-delete" (click)="onTaxAdditiveDeleteClick(i)">
-              <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
+            <button
+              *ngIf="!taxAdditivesCollection.getById(taxAdditiveValue.id)?.system"
+              mat-icon-button
+              class="tax-additive-delete"
+              (click)="onTaxAdditiveDeleteClick(taxAdditiveValue)"
+            >
+              <!--<mat-icon class="tax-additive-delete-icon">delete</mat-icon>-->
+              D
             </button>
-            <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditive.id)!"></app-tax-element></strong>
+            <button
+              *ngIf="!taxAdditivesCollection.getById(taxAdditiveValue.id)?.system"
+              mat-icon-button
+              class="tax-additive-edit"
+              (click)="onTaxAdditiveEditClick(taxAdditiveValue)"
+            >
+              <!--<mat-icon class="tax-additive-edit-icon">edit</mat-icon>-->
+              E
+            </button>
+            <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditiveValue.id)!"></app-tax-element></strong>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button
+              mat-button
+              color="primary"
+              (click)="onAddTaxAdditiveClick()"
+            >
+              Add
+            </button>
           </td>
         </tr>
       </table>
     </td>
     <td>
       <table class="nested-table">
-        <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
+        <tr *ngFor="let taxAdditiveValue of taxAdditiveValues">
           <td>
-            <strong [class.hidden]="!taxAdditive.taxable">
-              <app-tax-element [taxElement]="taxElementsCollection.getTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
+            <strong [class.hidden]="!taxAdditivesCollection.getById(taxAdditiveValue.id)?.taxable">
+              <app-tax-element [taxElement]="taxElementsCollection.getTaxableValueId(taxAdditiveValue.id)" [value]="taxAdditiveValue.value | number: '1.2-2'"></app-tax-element>
             </strong>
           </td>
         </tr>
@@ -164,10 +126,10 @@
     </td>
     <td>
       <table class="nested-table">
-        <tr *ngFor="let taxAdditive of customizationForm.controls['taxAdditives'].value">
+        <tr *ngFor="let taxAdditiveValue of taxAdditiveValues">
           <td>
-            <strong [class.hidden]="taxAdditive.taxable">
-              <app-tax-element [taxElement]="taxElementsCollection.getNonTaxableValueId(taxAdditive.id)" [value]="taxAdditive.value | number: '1.2-2'"></app-tax-element>
+            <strong [class.hidden]="taxAdditivesCollection.getById(taxAdditiveValue.id)?.taxable">
+              <app-tax-element [taxElement]="taxElementsCollection.getNonTaxableValueId(taxAdditiveValue.id)" [value]="taxAdditiveValue.value | number: '1.2-2'"></app-tax-element>
             </strong>
           </td>
         </tr>
@@ -177,8 +139,8 @@
   </tr>
   <tr>
     <td><app-tax-element [taxElement]="taxElementsCollection.totalGrossTaxElement"></app-tax-element></td>
-    <td><app-tax-element [value]="sumTaxAdditives(selectedTaxAdditives, true) | number: '1.2-2'" [taxElement]="taxElementsCollection.totalGrossValueTaxElement"></app-tax-element></td>
-    <td>{{ sumTaxAdditives(selectedTaxAdditives, false) | number: '1.2-2' }}</td>
+    <td><app-tax-element [value]="sumTaxAdditives(taxAdditiveValues, true) | number: '1.2-2'" [taxElement]="taxElementsCollection.totalGrossValueTaxElement"></app-tax-element></td>
+    <td>{{ sumTaxAdditives(taxAdditiveValues, false) | number: '1.2-2' }}</td>
     <td></td>
   </tr>
   <tr>

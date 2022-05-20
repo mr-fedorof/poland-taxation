@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Add Tax Additive</h1>
+<h1 mat-dialog-title>Tax Additive</h1>
 
 <div mat-dialog-content>
   <mat-form-field class="form-control">
@@ -10,7 +10,7 @@
     </mat-select>
   </mat-form-field>
 
-  <p *ngIf="taxAdditive" [innerHTML]="taxAdditive.description"></p>
+  <p *ngIf="taxAdditive && taxAdditive.description" [innerHTML]="taxAdditive.description"></p>
 
   <mat-form-field class="form-control">
     <mat-label>Value</mat-label>
@@ -24,5 +24,5 @@
     mat-button
     [mat-dialog-close]="{ taxAdditive: taxAdditive, value: taxAdditiveValue }"
     [disabled]="!taxAdditiveControl.value || !taxAdditiveValueControl.value"
-  >Add</button>
+  >Apply</button>
 </div>

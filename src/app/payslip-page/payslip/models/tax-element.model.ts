@@ -1,4 +1,4 @@
-import { TaxElementId } from './tax-element-id.model';
+import { TaxElementId } from '../../taxation/tax-element-id.model';
 
 export interface TaxElement {
   id: TaxElementId;
