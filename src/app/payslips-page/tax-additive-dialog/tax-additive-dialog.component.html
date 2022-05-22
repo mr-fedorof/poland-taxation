@@ -21,7 +21,8 @@
 <div mat-dialog-actions class="actions">
   <button mat-button (click)="onCancelClick()">Cancel</button>
   <button
-    mat-button
+    mat-flat-button
+    color="primary"
     [mat-dialog-close]="{ taxAdditive: taxAdditive, value: taxAdditiveValue }"
     [disabled]="!taxAdditiveControl.value || !taxAdditiveValueControl.value"
   >Apply</button>

@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TaxParametersComponent } from './tax-parameters.component';
 
@@ -19,7 +19,7 @@ import { TaxParametersComponent } from './tax-parameters.component';
     MatInputModule,
     MatCheckboxModule,
     MatFormFieldModule,
-    MatDividerModule,
+    MatSliderModule,
   ],
   exports: [
     TaxParametersComponent,

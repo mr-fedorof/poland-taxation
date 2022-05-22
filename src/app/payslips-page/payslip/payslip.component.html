@@ -85,8 +85,7 @@
               class="tax-additive-delete"
               (click)="onTaxAdditiveDeleteClick(taxAdditiveValue)"
             >
-              <!--<mat-icon class="tax-additive-delete-icon">delete</mat-icon>-->
-              D
+              <mat-icon class="tax-additive-delete-icon">delete</mat-icon>
             </button>
             <button
               *ngIf="!taxAdditivesCollection.getById(taxAdditiveValue.id)?.system"
@@ -94,8 +93,7 @@
               class="tax-additive-edit"
               (click)="onTaxAdditiveEditClick(taxAdditiveValue)"
             >
-              <!--<mat-icon class="tax-additive-edit-icon">edit</mat-icon>-->
-              E
+              <mat-icon class="tax-additive-edit-icon">edit</mat-icon>
             </button>
             <strong><app-tax-element [taxElement]="taxAdditivesCollection.getById(taxAdditiveValue.id)!"></app-tax-element></strong>
           </td>
@@ -103,11 +101,11 @@
         <tr>
           <td>
             <button
-              mat-button
+              mat-flat-button
               color="primary"
               (click)="onAddTaxAdditiveClick()"
             >
-              Add
+              Add Tax Additive
             </button>
           </td>
         </tr>

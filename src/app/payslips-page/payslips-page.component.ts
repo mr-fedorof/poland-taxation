@@ -8,6 +8,10 @@ import { TaxAdditiveElementsCollection } from './payslip/services/tax-additive-e
 import { PayslipsConfiguration } from './payslips-generator-dialog/payslips-configuration.model';
 import { PayslipsGeneratorDialogComponent } from './payslips-generator-dialog/payslips-generator-dialog.component';
 import { TaxAdditiveDialogComponent } from './tax-additive-dialog/tax-additive-dialog.component';
+import {
+  TaxParametersDialogComponent,
+  TaxParametersDialogOptions
+} from './tax-parameters-dialog/tax-parameters-dialog.component';
 import { TaxParameters } from './tax-parameters/tax-parameters.model';
 import { TaxAdditiveValue } from './taxation/tax-additive-value.model';
 import { TaxElementId } from './taxation/tax-element-id.model';
@@ -24,14 +28,24 @@ export interface Month {
 }
 
 @Component({
-  selector: 'app-payslip-page',
-  templateUrl: './payslip-page.component.html',
-  styleUrls: ['./payslip-page.component.scss']
+  selector: 'app-payslips-page',
+  templateUrl: './payslips-page.component.html',
+  styleUrls: ['./payslips-page.component.scss']
 })
-export class PayslipPageComponent implements OnInit {
+export class PayslipsPageComponent implements OnInit {
   private readonly payslipsConfigurationSource: ReplaySubject<PayslipsConfiguration> = new ReplaySubject<PayslipsConfiguration>(1);
 
   private _months: Month[] = [];
+
+  public payslipsTableColumns: string[] = [
+    'name',
+    'totalNet',
+    'tax',
+    'ppk',
+    'actions',
+  ];
+
+  public visiblePayslipsMap: { [key: number]: boolean } = {};
 
   public get months(): Month[] {
     return this._months;
@@ -39,12 +53,26 @@ export class PayslipPageComponent implements OnInit {
 
   public set months(value: Month[]) {
     this._months = value;
-    this.sumNet = value.reduce((p, c) => p + c.taxation.totalNet, 0);
-    this.avgNet = this.sumNet / value.length;
-  }
+    this.sumTotalNet = value.reduce((p, c) => p + c.taxation.totalNet, 0);
+    this.avgTotalNet = this.sumTotalNet / value.length;
+    this.sumPpk = value.reduce((p, c) => p + c.taxation.ppkContribution, 0);
+    this.sumEmployerPpk = value.reduce((p, c) => p + c.taxation.ppkEmployerContribution, 0);
+    this.sumEmployeePpk = value.reduce((p, c) => p + c.taxation.ppkEmployeeContribution, 0);
+    this.sumIncomeTax = value.reduce((p, c) => p + c.taxation.incomeTax, 0);
+    this.sumIncomeTax1 = value.reduce((p, c) => p + c.taxation.incomeTax1, 0);
+    this.sumIncomeTax2 = value.reduce((p, c) => p + c.taxation.incomeTax2, 0);
+    this.sumIncomeTax3 = value.reduce((p, c) => p + c.taxation.incomeTax3, 0);
+   }
 
-  public sumNet: number = 0;
-  public avgNet: number = 0
+  public sumTotalNet: number = 0;
+  public avgTotalNet: number = 0;
+  public sumPpk: number = 0;
+  public sumEmployerPpk: number = 0;
+  public sumEmployeePpk: number = 0;
+  public sumIncomeTax: number = 0;
+  public sumIncomeTax1: number = 0;
+  public sumIncomeTax2: number = 0;
+  public sumIncomeTax3: number = 0;
 
   constructor(
     private readonly dialog: MatDialog,
@@ -60,15 +88,38 @@ export class PayslipPageComponent implements OnInit {
       });
   }
 
-  public onTaxParametersChange(month: Month, taxParameters: TaxParameters): void {
-    this.months[month.index] = {
-      ...month,
-      taxParameters: taxParameters,
-      taxAdditiveValues: this.syncTaxAdditiveValues(month.taxAdditiveValues, taxParameters)
-    };
-
-    this.months = this.recalculateMonths(this.months);
+  public isPayslipVisible: (index: number, month: Month) => boolean = (index: number, month: Month) => {
+    return this.visiblePayslipsMap[month.index];
   }
+
+  public onTaxParametersChangeClick(month: Month): void {
+    const dialogRef: MatDialogRef<TaxParametersDialogComponent> = this.dialog.open(TaxParametersDialogComponent, {
+      width: '1280px',
+      data: {
+        taxParameters: this.months[month.index].taxParameters,
+        pkupEnabled: true
+      } as TaxParametersDialogOptions
+    });
+
+    dialogRef.afterClosed().subscribe((taxParameters: TaxParameters) => {
+      this.months[month.index] = {
+        ...month,
+        taxParameters: taxParameters,
+        taxAdditiveValues: this.syncTaxAdditiveValues(month.taxAdditiveValues, taxParameters)
+      };
+
+      this.months = this.recalculateMonths(this.months);
+    });
+  }
+
+  public onTogglePayslipVisibilityClick: (month: Month) => void = (month: Month) => {
+    this.visiblePayslipsMap[month.index] = !this.visiblePayslipsMap[month.index];
+    this._months = [...this._months];
+  }
+
+
+
+
 
   public onAddTaxAdditiveValue(month: Month): void {
     const dialogRef: MatDialogRef<TaxAdditiveDialogComponent> = this.dialog.open(TaxAdditiveDialogComponent, {
@@ -208,6 +259,10 @@ export class PayslipPageComponent implements OnInit {
       taxAdditiveValues: taxAdditiveValues,
       pkup: taxParameters.pkup,
       ppkEnabled: taxParameters.ppkEnabled,
+      ppkBasicEmployee: taxParameters.ppkBasicEmployee,
+      ppkBasicEmployer: taxParameters.ppkBasicEmployer,
+      ppkAdditionEmployee: taxParameters.ppkAdditionEmployee,
+      ppkAdditionEmployer: taxParameters.ppkAdditionEmployer,
       liveOutside: taxParameters.liveOutside,
       pit2Enabled: taxParameters.pit2Enabled,
       tax1: taxParameters.tax1,
@@ -242,7 +297,13 @@ export class PayslipPageComponent implements OnInit {
 
   private syncPpkTaxAdditiveValues(taxAdditiveValues: TaxAdditiveValue[], taxParameters: TaxParameters): TaxAdditiveValue[] {
     if (taxParameters.ppkEnabled) {
-      const ppkIncome: number = this.taxationService.getPpkIncome(taxAdditiveValues);
+      const ppkIncome: number = this.taxationService.getPpkIncome({
+        ppkEnabled: taxParameters.ppkEnabled,
+        ppkBasicEmployee: taxParameters.ppkBasicEmployee,
+        ppkBasicEmployer: taxParameters.ppkBasicEmployer,
+        ppkAdditionEmployee: taxParameters.ppkAdditionEmployee,
+        ppkAdditionEmployer: taxParameters.ppkAdditionEmployer,
+      }, taxAdditiveValues);
 
       taxAdditiveValues = this.addOrUpdateTaxAdditiveValue(taxAdditiveValues, { id: TaxElementId.PpkIncomeTaxAdditive, value: ppkIncome });
     } else {

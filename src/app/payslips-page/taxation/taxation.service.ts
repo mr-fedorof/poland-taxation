@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { TaxAdditiveElementsCollection } from '../payslip/services/tax-additive-elements-collection.service';
 import { TaxElementsCollection } from '../payslip/services/tax-elements-collection.service';
 import { DistributeTax } from './distribute-tax.model';
+import { PpkParameters } from './ppk-parameters.model';
 import { TaxAdditiveValue } from './tax-additive-value.model';
 import { TaxElementId } from './tax-element-id.model';
 import { TaxationParameters } from './taxation-parameters.model';
@@ -19,7 +20,11 @@ export class TaxationService {
   constructor(private readonly taxAdditiveElementsCollection: TaxAdditiveElementsCollection) {
   }
 
-  public getPpkIncome(taxAdditiveValues: TaxAdditiveValue[]): number {
+  public getPpkIncome(ppkParameters: PpkParameters, taxAdditiveValues: TaxAdditiveValue[]): number {
+    if (!ppkParameters.ppkEnabled) {
+      return 0;
+    }
+
     const totalGross: number = taxAdditiveValues
       .filter(_ => this.taxAdditiveElementsCollection.getById(_.id)?.taxable)
       .map(_ => _.value)
@@ -29,7 +34,10 @@ export class TaxationService {
       this.getTaxAdditiveValue(TaxElementId.PpkIncomeTaxAdditive, taxAdditiveValues)
     );
 
-    return socialContributionBase * 0.015;
+    return this.sum(
+      socialContributionBase * (ppkParameters.ppkBasicEmployer / 100),
+      socialContributionBase * (ppkParameters.ppkAdditionEmployer / 100)
+    );
   }
 
   public calculate(taxationParameters: TaxationParameters): Taxation {
@@ -116,13 +124,13 @@ export class TaxationService {
 
     const ppkBasicContribution: DistributeTax = {
       base: ppkEnabled ? socialContributionBase : 0,
-      employee: ppkEnabled ? socialContributionBase * 0.02 : 0,
-      employer: ppkEnabled ? socialContributionBase * 0.015 : 0
+      employee: ppkEnabled ? socialContributionBase * (taxationParameters.ppkBasicEmployee / 100) : 0,
+      employer: ppkEnabled ? socialContributionBase * (taxationParameters.ppkBasicEmployer / 100) : 0
     };
     const ppkAdditionalContribution: DistributeTax = {
       base: ppkEnabled ? socialContributionBase : 0,
-      employee: 0,
-      employer: 0
+      employee: ppkEnabled ? socialContributionBase * (taxationParameters.ppkAdditionEmployee / 100) : 0,
+      employer: ppkEnabled ? socialContributionBase * (taxationParameters.ppkAdditionEmployer / 100) : 0
     };
 
     // HEALTH INSURANCE CONTRIBUTION
@@ -221,10 +229,24 @@ export class TaxationService {
       socialContribution: socialContribution,
       ppkBasicContribution: ppkBasicContribution,
       ppkAdditionalContribution: ppkAdditionalContribution,
+      ppkEmployeeContribution: this.sum(
+        ppkBasicContribution.employee,
+        ppkAdditionalContribution.employee),
+      ppkEmployerContribution: this.sum(
+        ppkBasicContribution.employer,
+        ppkAdditionalContribution.employer),
+      ppkContribution: this.sum(
+        ppkBasicContribution.employee,
+        ppkAdditionalContribution.employee,
+        ppkBasicContribution.employer,
+        ppkAdditionalContribution.employer),
       healthInsuranceContribution: healthInsuranceContribution,
       cumulativeTaxBase: cumulativeTaxBase,
       cumulativeRetirementDisabilityBase: Math.min(cumulativeRetirementDisabilityBase, taxationParameters.retirementDisabilityBaseThreshold),
       incomeTax: incomeTax,
+      incomeTax1: incomeTax1,
+      incomeTax2: incomeTax2,
+      incomeTax3: incomeTax3,
       deductibleExpenses: deductibleExpenses,
       middleClassTaxRelief: middleClassTaxRelief,
       taxRelief: taxRelief,

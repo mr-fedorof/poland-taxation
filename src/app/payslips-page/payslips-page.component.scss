@@ -1,0 +1,69 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 480px;
+}
+
+.header {
+  flex-shrink: 0;
+}
+
+.payslips {
+  flex-grow: 1;
+}
+
+.payslips-table {
+  width: 100%;
+
+  &__row {
+    .action-settings {
+      visibility: hidden;
+    }
+
+    &:hover {
+      .action-settings {
+        visibility: visible;
+      }
+    }
+  }
+
+  &__col-actions {
+    width: 200px;
+
+    .actions {
+      display: flex;
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+
+  &__col-payslip {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+.payslip {
+  width: 100%;
+}
+
+.landing-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.landing-content-card {
+  width: 480px;
+
+  &__title {
+    text-align: right;
+  }
+
+  &__button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

@@ -16,3 +16,41 @@ body {
   color: white;
   font-size: 16px;
 }
+
+.form-control-label {
+  display: block;
+  width: 100%;
+}
+
+.ppk-slider {
+  width: 100%;
+}
+
+.group {
+  margin-bottom: 1.34375em;
+}
+
+.h-group {
+  $gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: calc(-1 * #{$gap}) 0 0 calc(-1 * #{$gap});
+  width: calc(100% + #{$gap});
+
+  & > * {
+    margin: $gap 0 0 $gap;
+  }
+}
+
+.v-group {
+  $gap: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin: calc(-1 * #{$gap}) 0 0 calc(-1 * #{$gap});
+  width: calc(100% + #{$gap});
+
+  & > * {
+    margin: $gap 0 0 $gap;
+  }
+}

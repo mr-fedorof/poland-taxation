@@ -1,0 +1,88 @@
+<mat-toolbar color="primary" class="header">
+  <h1>Payslips</h1>
+</mat-toolbar>
+
+<div class="payslips" *ngIf="months.length > 0">
+  <table mat-table [dataSource]="months" multiTemplateDataRows class="payslips-table">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let month">{{ month.name }}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalNet">
+      <th mat-header-cell *matHeaderCellDef>Net</th>
+      <td mat-cell *matCellDef="let month">{{ month.taxation.totalNet | currencyPln }}</td>
+      <td mat-footer-cell *matFooterCellDef>
+        <p><strong>{{ sumTotalNet | currencyPln }}</strong> (SUM)</p>
+        <p><strong>{{ avgTotalNet | currencyPln }}</strong> (ANG)</p>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ppk">
+      <th mat-header-cell *matHeaderCellDef>PPK (Total / Employee / Employer)</th>
+      <td mat-cell *matCellDef="let month">{{ month.taxation.ppkContribution | currencyPln }} / {{ month.taxation.ppkEmployeeContribution | currencyPln }} / {{ month.taxation.ppkEmployerContribution | currencyPln }}</td>
+      <td mat-footer-cell *matFooterCellDef>
+        <p><strong>{{ sumPpk | currencyPln }}</strong> / <strong>{{ sumEmployeePpk | currencyPln }}</strong> / <strong>{{ sumEmployerPpk | currencyPln }}</strong> (SUM)</p>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tax">
+      <th mat-header-cell *matHeaderCellDef>Tax (Total / Tax 1 / Tax 2 / Tax 3 )</th>
+      <td mat-cell *matCellDef="let month">{{ month.taxation.incomeTax | currencyPln }} / {{ month.taxation.incomeTax1 | currencyPln }} / {{ month.taxation.incomeTax2 | currencyPln }} / {{ month.taxation.incomeTax3 | currencyPln }}</td>
+      <td mat-footer-cell *matFooterCellDef>
+        <p><strong>{{ sumIncomeTax | currencyPln }}</strong> / <strong>{{ sumIncomeTax1 | currencyPln }}</strong> / <strong>{{ sumIncomeTax2 | currencyPln }}</strong> / <strong>{{ sumIncomeTax3 | currencyPln }}</strong> (SUM)</p>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell class="payslips-table__col-actions" *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let month" class="payslips-table__col-actions">
+        <div class="actions">
+          <button mat-button (click)="onTaxParametersChangeClick(month)" class="action-settings">
+            <mat-icon>settings</mat-icon>
+          </button>
+          <button mat-button (click)="onTogglePayslipVisibilityClick(month)" [class.mat-accent]="isPayslipVisible(0, month)">
+            Payslip
+          </button>
+        </div>
+      </td>
+      <td mat-footer-cell class="payslips-table__col-actions" *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="payslip">
+      <td mat-cell *matCellDef="let month" class="payslips-table__col-payslip" [attr.colspan]="payslipsTableColumns.length">
+        <app-payslip
+          class="payslip"
+          [payslipParameters]="month.payslipParameters"
+          [taxAdditiveValues]="month.taxAdditiveValues"
+          [taxation]="month.taxation"
+          (taxAdditiveAdd)="onAddTaxAdditiveValue(month)"
+          (taxAdditiveRemove)="onRemoveTaxAdditiveValue(month, $event)"
+          (taxAdditiveEdit)="onEditTaxAdditiveValue(month, $event)"
+        ></app-payslip>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="payslipsTableColumns"></tr>
+
+    <tr mat-row
+      class="payslips-table__row"
+      *matRowDef="let month; columns: payslipsTableColumns;"
+    ></tr>
+
+    <tr mat-footer-row *matFooterRowDef="payslipsTableColumns"></tr>
+
+    <tr mat-row *matRowDef="let row; columns: ['payslip']; when: isPayslipVisible"></tr>
+  </table>
+</div>
+
+<div class="landing-content" *ngIf="months.length === 0">
+  <div class="landing-content-card">
+    <h1 class="landing-content-card__title">Let's generate your payslips</h1>
+
+    <div class="landing-content-card__button-wrapper">
+      <button mat-raised-button color="accent" (click)="onAddPayslip()">Generate</button>
+    </div>
+  </div>
+</div>

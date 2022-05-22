@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { startWith } from 'rxjs';
+import { FormBuilder, FormControlStatus, FormGroup } from '@angular/forms';
+import { distinctUntilChanged, startWith } from 'rxjs';
 import { TaxParameters } from './tax-parameters.model';
 
 @Component({
@@ -17,6 +17,7 @@ export class TaxParametersComponent implements OnInit {
   @Input() public baseTaxParameters: TaxParameters | null = null;
 
   @Output() public readonly taxParametersChange: EventEmitter<TaxParameters> = new EventEmitter<TaxParameters>();
+  @Output() public readonly taxParametersValidationChange: EventEmitter<FormControlStatus> = new EventEmitter<FormControlStatus>();
 
   constructor(
     private readonly formBuilder: FormBuilder
@@ -39,13 +40,39 @@ export class TaxParametersComponent implements OnInit {
       }),
       liveOutside: this.formBuilder.control(this.baseTaxParameters?.liveOutside ?? false),
       ppkEnabled: this.formBuilder.control(this.baseTaxParameters?.ppkEnabled ?? false),
+      ppkBasicEmployee: this.formBuilder.control(this.baseTaxParameters?.ppkBasicEmployee ?? 2),
+      ppkBasicEmployer: this.formBuilder.control(this.baseTaxParameters?.ppkBasicEmployer ?? 1.5),
+      ppkAdditionEmployee: this.formBuilder.control(this.baseTaxParameters?.ppkAdditionEmployee ?? 0),
+      ppkAdditionEmployer: this.formBuilder.control(this.baseTaxParameters?.ppkAdditionEmployer ?? 0),
       pit2Enabled: this.formBuilder.control(this.baseTaxParameters?.pit2Enabled ?? true),
     });
+
+    this.form.controls['ppkEnabled'].valueChanges
+      .pipe(startWith(this.form.controls['ppkEnabled'].value), distinctUntilChanged())
+      .subscribe((value: boolean) => {
+        if (value) {
+          this.form.controls['ppkBasicEmployee'].enable();
+          this.form.controls['ppkBasicEmployer'].enable();
+          this.form.controls['ppkAdditionEmployee'].enable();
+          this.form.controls['ppkAdditionEmployer'].enable();
+        } else {
+          this.form.controls['ppkBasicEmployee'].disable();
+          this.form.controls['ppkBasicEmployer'].disable();
+          this.form.controls['ppkAdditionEmployee'].disable();
+          this.form.controls['ppkAdditionEmployer'].disable();
+        }
+      });
 
     this.form.valueChanges
       .pipe(startWith(this.form.value))
       .subscribe((value: TaxParameters) => {
         this.taxParametersChange.emit(value);
+      });
+
+    this.form.statusChanges
+      .pipe(startWith(this.form.status))
+      .subscribe((status: FormControlStatus) => {
+        this.taxParametersValidationChange.emit(status);
       });
   }
 }

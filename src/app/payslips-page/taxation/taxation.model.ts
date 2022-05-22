@@ -11,10 +11,16 @@ export interface Taxation {
   socialContribution: DistributeTax;
   ppkBasicContribution: DistributeTax;
   ppkAdditionalContribution: DistributeTax;
+  ppkEmployeeContribution: number;
+  ppkEmployerContribution: number;
+  ppkContribution: number;
   healthInsuranceContribution: DistributeTax;
   cumulativeTaxBase: number;
   cumulativeRetirementDisabilityBase: number;
   incomeTax: number;
+  incomeTax1: number;
+  incomeTax2: number;
+  incomeTax3: number;
   deductibleExpenses: number;
   middleClassTaxRelief: number;
   taxRelief: number;

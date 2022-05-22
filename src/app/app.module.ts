@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PayslipPageModule } from './payslip-page/payslip-page.module';
+import { PayslipsPageModule } from './payslips-page/payslips-page.module';
 
 @NgModule({
   declarations: [
@@ -13,9 +13,11 @@ import { PayslipPageModule } from './payslip-page/payslip-page.module';
     BrowserModule,
     AppRoutingModule,
     NoopAnimationsModule,
-    PayslipPageModule
+    PayslipsPageModule
   ],
-  providers: [],
+  providers: [
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'PLN' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

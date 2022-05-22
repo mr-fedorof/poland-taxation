@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.tab-content {
+  padding: 16px;
+  min-height: 256px;
+  box-sizing: border-box;
+}
+
+.tax,
+.tax-threshold {
+  flex-grow: 1;
+}
+
+.ppk-basic-contr {
+  flex-grow: 1;
+}
+
+.ppk-add-contr {
+  flex-grow: 2;
+}

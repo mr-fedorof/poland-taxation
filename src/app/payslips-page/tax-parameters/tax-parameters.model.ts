@@ -1,6 +1,10 @@
 export interface TaxParameters {
   pkup: number;
   ppkEnabled: boolean;
+  ppkBasicEmployee: number;
+  ppkBasicEmployer: number;
+  ppkAdditionEmployee: number;
+  ppkAdditionEmployer: number;
   liveOutside: boolean;
   pit2Enabled: boolean;
   tax1: number;
